@@ -1,0 +1,9 @@
+node_modules
+dist
+.build
+.next
+*.log
+.env
+apps/**/.env
+.prisma
+.turbo
