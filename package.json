@@ -1,5 +1,5 @@
 {
-  "name": "my-monorepo",
+  "name": "learning-lab",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
@@ -9,13 +9,15 @@
   "scripts": {
     "test": "turbo test",
     "dev": "turbo dev",
+    "dev:frontend": "turbo dev --filter=frontend",
+    "dev:backend": "turbo dev --filter=backend",
     "build": "turbo build",
     "lint": "turbo lint",
     "clean": "turbo clean && rimraf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,md,json}\"",
     "prepare": "husky"
   },
-  "private": "true",
+  "private": true,
   "packageManager": "npm@10.0.0",
   "workspaces": [
     "apps/*",
