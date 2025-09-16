@@ -1,12 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -14,19 +7,128 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//
+// Enums
+//
+enum SourceKind {
+  YOUTUBE
+  PODCAST
+  ARTICLE
+  BOOK
+  OTHER
+}
+
+enum ReviewResult {
+  AGAIN
+  HARD
+  GOOD
+  EASY
+}
+
+//
+// Models
+//
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sources   Source[]
+  batches   CaptureBatch[]
+  vocabs    Vocab[]
+  reviews   VocabReview[]
+}
+
+model Source {
+  id           Int       @id @default(autoincrement())
+  userId       Int
+  kind         SourceKind
+  title        String?   @db.Text
+  url          String?   @db.Text
+  author       String?   @db.VarChar(256)
+  defaultTags  String[]
+  defaultNotes String?   @db.Text
+  createdAt    DateTime  @default(now())
+
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vocabs Vocab[]
+  batches CaptureBatch[]
+
+  @@index([userId, kind])
+  @@unique([userId, url]) 
+}
+
+model CaptureBatch {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  sourceId  Int?
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+  tags      String[]
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  source  Source? @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  items   Vocab[]
+
+  @@index([userId, startedAt])
+}
+
 model Vocab {
-  id             Int      @id @default(autoincrement())
-  word           String
-  meaningVi      String
-  explanationEn  String
-  sourceUrl      String?      // link YouTube/podcast
-  tags           String[]     // mảng tag đơn giản
-  addedAt        DateTime @default(now())
-  lastReviewedAt DateTime?     // lần ôn gần nhất
-  notes          String?
+  id             Int       @id @default(autoincrement())
+  userId         Int
+  word           String    @db.VarChar(128)
+  meaningVi      String    @db.Text
+  explanationEn  String?   @db.Text
+  notes          String?   @db.Text
+  tags           String[]
+
+  // optional context
+  sourceId       Int?
+  timecodeSec    Int?          
+
+  // batch grouping
+  captureBatchId Int?
+
+  // timestamps
+  addedAt        DateTime  @default(now())
+  lastReviewedAt DateTime?
+
+  // control
+  isSuspended    Boolean   @default(false)
+
+  // SRS-lite
+  dueAt          DateTime  @default(now())
+  intervalDays   Int       @default(0)
+  ease           Int       @default(250)   // 2.5 * 100
+  repetitions    Int       @default(0)
+  lapses         Int       @default(0)
+  lastResult     ReviewResult?
+
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  source        Source?      @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  captureBatch  CaptureBatch? @relation(fields: [captureBatchId], references: [id], onDelete: SetNull)
+  reviews       VocabReview[]
 
   @@index([addedAt])
   @@index([lastReviewedAt])
+  @@index([dueAt])
+  @@unique([userId, word])
 }
 
+model VocabReview {
+  id          Int          @id @default(autoincrement())
+  vocabId     Int
+  userId      Int
+  reviewedAt  DateTime     @default(now())
+  result      ReviewResult
+  durationSec Int?
+  notes       String?      @db.Text
 
+  vocab Vocab @relation(fields: [vocabId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, reviewedAt])
+  @@index([vocabId, reviewedAt])
+}
