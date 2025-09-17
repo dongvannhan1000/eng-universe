@@ -1,22 +1,27 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ActiveUserService } from '../../common/active-user.service';
 import { PrismaService } from '../../infra/prisma/prisma.service';
-import { VocabService } from './vocab.service';
+import { CaptureBatchesService } from './capture-batches.service';
 
-describe('VocabService', () => {
-  let service: VocabService;
+describe('CaptureBatchesService', () => {
+  let service: CaptureBatchesService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        VocabService,
+        CaptureBatchesService,
         {
           provide: PrismaService,
           useValue: {
-            vocab: {},
-            vocabReview: {},
-            captureBatch: {},
-            $transaction: () => Promise.resolve([]),
+            captureBatch: {
+              create: jest.fn(),
+              findMany: jest.fn(),
+              count: jest.fn(),
+              findFirst: jest.fn(),
+              update: jest.fn(),
+              delete: jest.fn(),
+            },
+            $transaction: jest.fn(),
           },
         },
         {
@@ -26,7 +31,7 @@ describe('VocabService', () => {
       ],
     }).compile();
 
-    service = module.get<VocabService>(VocabService);
+    service = module.get<CaptureBatchesService>(CaptureBatchesService);
   });
 
   it('should be defined', () => {

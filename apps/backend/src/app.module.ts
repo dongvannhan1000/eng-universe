@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CommonModule } from './common/common.module';
 import { HealthController } from './health.controller';
-import { VocabModule } from './modules/vocab/vocab.module';
-import { PrismaService } from './infra/prisma/prisma.service';
 import { PrismaModule } from './infra/prisma/prisma.module';
+import { CaptureBatchesModule } from './modules/capture-batches/capture-batches.module';
+import { VocabModule } from './modules/vocab/vocab.module';
 
 @Module({
-  imports: [VocabModule, PrismaModule],
+  imports: [CommonModule, VocabModule, CaptureBatchesModule, PrismaModule],
   controllers: [AppController, HealthController],
-  providers: [AppService, PrismaService],
+  providers: [AppService],
 })
 export class AppModule {}

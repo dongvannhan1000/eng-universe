@@ -1,15 +1,21 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
 } from '@nestjs/common';
-import { VocabService } from './vocab.service';
 import { CreateVocabDto } from './dto/create-vocab.dto';
+import { ListVocabQueryDto } from './dto/list-vocab-query.dto';
+import { ListVocabReviewsQueryDto } from './dto/list-vocab-reviews-query.dto';
+import { ReviewQueueQueryDto } from './dto/review-queue-query.dto';
+import { ReviewVocabDto } from './dto/review-vocab.dto';
 import { UpdateVocabDto } from './dto/update-vocab.dto';
+import { VocabService } from './vocab.service';
 
 @Controller('vocab')
 export class VocabController {
@@ -21,22 +27,48 @@ export class VocabController {
   }
 
   @Get()
-  findAll() {
-    return this.vocabService.findAll();
+  findAll(@Query() query: ListVocabQueryDto) {
+    return this.vocabService.findAll(query);
+  }
+
+  @Get('summary')
+  getSummary() {
+    return this.vocabService.getSummary();
+  }
+
+  @Get('review/queue')
+  getReviewQueue(@Query() query: ReviewQueueQueryDto) {
+    return this.vocabService.getReviewQueue(query);
+  }
+
+  @Post(':id/reviews')
+  review(@Param('id', ParseIntPipe) id: number, @Body() dto: ReviewVocabDto) {
+    return this.vocabService.review(id, dto);
+  }
+
+  @Get(':id/reviews')
+  listReviews(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() query: ListVocabReviewsQueryDto,
+  ) {
+    return this.vocabService.listReviews(id, query);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.vocabService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.vocabService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVocabDto: UpdateVocabDto) {
-    return this.vocabService.update(+id, updateVocabDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateVocabDto: UpdateVocabDto,
+  ) {
+    return this.vocabService.update(id, updateVocabDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.vocabService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.vocabService.remove(id);
   }
 }
