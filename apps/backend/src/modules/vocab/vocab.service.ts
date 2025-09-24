@@ -8,7 +8,7 @@ import { ListVocabReviewsQueryDto } from './dto/list-vocab-reviews-query.dto';
 import { ReviewQueueQueryDto } from './dto/review-queue-query.dto';
 import { ReviewVocabDto } from './dto/review-vocab.dto';
 import { UpdateVocabDto } from './dto/update-vocab.dto';
-import { VocabEntity } from './entities/vocab.entity';
+import { VocabRow } from './entities/vocab.entity';
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 const HOUR_IN_MS = 60 * 60 * 1000;
@@ -184,7 +184,7 @@ export class VocabService {
 
     const next = this.calculateNextScheduling(vocab, dto.result, reviewedAt);
 
-    const [updated] = await this.prisma.$transaction([
+    const [updated, review] = await this.prisma.$transaction([
       this.prisma.vocab.update({
         where: { id: vocab.id },
         data: next,
@@ -204,7 +204,7 @@ export class VocabService {
       }),
     ]);
 
-    return updated;
+    return { updated, review };
   }
 
   async listReviews(id: number, query: ListVocabReviewsQueryDto) {
@@ -281,25 +281,25 @@ export class VocabService {
       conditions.push({ dueAt: { lte: dueBefore } });
     }
 
-    if (query.search) {
-      const term = query.search.trim();
-      if (term) {
-        conditions.push({
-          OR: [
-            { word: { contains: term, mode: 'insensitive' } },
-            { meaningVi: { contains: term, mode: 'insensitive' } },
-            { explanationEn: { contains: term, mode: 'insensitive' } },
-            { notes: { contains: term, mode: 'insensitive' } },
-            { tags: { has: term } },
-          ],
-        });
-      }
+    // if (query.search) {
+    const term = query.q?.trim();
+    if (term) {
+      conditions.push({
+        OR: [
+          { word: { contains: term, mode: 'insensitive' } },
+          { meaningVi: { contains: term, mode: 'insensitive' } },
+          { explanationEn: { contains: term, mode: 'insensitive' } },
+          { notes: { contains: term, mode: 'insensitive' } },
+          { tags: { has: term } },
+        ],
+      });
     }
+    // }
 
     return { AND: conditions };
   }
 
-  private async ensureOwnership(id: number): Promise<VocabEntity> {
+  private async ensureOwnership(id: number): Promise<VocabRow> {
     const userId = this.activeUser.getUserId();
     const vocab = await this.prisma.vocab.findFirst({
       where: { id, userId },
@@ -313,7 +313,7 @@ export class VocabService {
   }
 
   private calculateNextScheduling(
-    vocab: VocabEntity,
+    vocab: VocabRow,
     result: ReviewResult,
     reviewedAt: Date,
   ): Prisma.VocabUpdateInput {

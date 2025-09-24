@@ -1,3 +1,4 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   ArrayMaxSize,
@@ -9,6 +10,7 @@ import {
   IsString,
   MaxLength,
   Min,
+  ValidateIf,
 } from 'class-validator';
 
 const toTrimmedString = ({ value }: { value: unknown }): unknown =>
@@ -70,27 +72,38 @@ const toNullableInt = ({
 };
 
 export class CreateVocabDto {
+  @ApiProperty({ maxLength: 128, example: 'polyglot' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(128)
   @Transform(toTrimmedString)
   word!: string;
 
+  @ApiProperty({ example: 'đa ngữ' })
   @IsString()
   @IsNotEmpty()
   @Transform(toTrimmedString)
   meaningVi!: string;
 
+  @ApiPropertyOptional({
+    example: 'a polyglot is someone who can speak many languages',
+  })
   @IsOptional()
   @IsString()
   @Transform(toTrimmedString)
   explanationEn?: string;
 
+  @ApiPropertyOptional({ example: 'learn with podcast' })
   @IsOptional()
   @IsString()
   @Transform(toTrimmedString)
   notes?: string;
 
+  @ApiPropertyOptional({
+    type: [String],
+    maxItems: 32,
+    example: ['podcast', 'yt'],
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
@@ -98,22 +111,42 @@ export class CreateVocabDto {
   @Transform(toTagArray)
   tags?: string[];
 
+  @ApiPropertyOptional({
+    type: Number,
+    nullable: true,
+    minimum: 1,
+    example: 12,
+  })
   @IsOptional()
+  @ValidateIf((_, v) => v !== null)
   @IsInt()
   @Min(1)
   @Transform(toNullableInt)
   captureBatchId?: number | null;
 
+  @ApiPropertyOptional({
+    type: Number,
+    nullable: true,
+    minimum: 0,
+    example: 95,
+  })
   @IsOptional()
+  @ValidateIf((_, v) => v !== null)
   @IsInt()
   @Min(0)
   @Transform(toNullableInt)
   timecodeSec?: number | null;
 
+  @ApiPropertyOptional({
+    type: String,
+    format: 'date-time',
+    example: '2025-09-22T10:00:00.000Z',
+  })
   @IsOptional()
   @Transform(toDateOrUndefined)
   dueAt?: Date;
 
+  @ApiPropertyOptional({ example: false })
   @IsOptional()
   @IsBoolean()
   isSuspended?: boolean;
