@@ -24,3 +24,9 @@ export class ReviewVocabResponseDoc {
   @ApiProperty({ type: () => ReviewVocabDtoDoc })
   review!: ReviewVocabDtoDoc;
 }
+
+export class ListVocabReviewsDoc {
+  @ApiProperty({ type: () => [VocabEntityDoc] })
+  items!: VocabEntityDoc[];
+  @ApiProperty({ example: '2025-09-24T15:25:19.000Z' }) dueBefore!: Date;
+}

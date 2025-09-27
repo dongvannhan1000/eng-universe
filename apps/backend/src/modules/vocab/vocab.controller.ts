@@ -29,7 +29,10 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { PaginatedVocabDoc } from './entities/list-vocab.entity';
+import {
+  ListVocabReviewsDoc,
+  PaginatedVocabDoc,
+} from './entities/list-vocab.entity';
 import { ReviewVocabResponseDoc } from './entities/list-vocab.entity';
 
 @Controller('vocab')
@@ -61,7 +64,7 @@ export class VocabController {
 
   @Get('review/queue')
   @ApiOperation({ summary: 'Get due vocabs for review (SRS queue)' })
-  @ApiOkResponse({ description: 'Due items', type: [VocabEntityDoc] })
+  @ApiOkResponse({ description: 'Due items', type: ListVocabReviewsDoc })
   @ApiQuery({ name: 'limit', required: false, example: 20 })
   getReviewQueue(@Query() query: ReviewQueueQueryDto) {
     return this.vocabService.getReviewQueue(query);
