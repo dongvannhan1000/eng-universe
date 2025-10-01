@@ -35,7 +35,7 @@ import {
 } from './entities/list-vocab.entity';
 import { ReviewVocabResponseDoc } from './entities/list-vocab.entity';
 
-@Controller('vocab')
+@Controller('api/vocab')
 @ApiTags('vocabs')
 @ApiBearerAuth()
 @ApiExtraModels(VocabEntityDoc, PaginatedVocabDoc)

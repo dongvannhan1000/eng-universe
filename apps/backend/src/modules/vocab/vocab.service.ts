@@ -71,9 +71,9 @@ export class VocabService {
         skip,
         take,
         orderBy,
-        include: {
-          captureBatch: true,
-        },
+        // include: {
+        //   captureBatch: true,
+        // },
       }),
       this.prisma.vocab.count({ where }),
     ]);

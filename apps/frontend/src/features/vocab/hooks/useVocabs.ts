@@ -1,23 +1,17 @@
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import type { VocabListParams } from "../types";
-import { fetchVocabs } from "../mock/repo";
-import { vocabQueryKeys } from "../utils/queryKeys";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { qk } from "./queryKeys";
+import { listVocabs, type ListVocabParams } from "../services/vocab.service";
 
-export function useVocabs(params: VocabListParams) {
-  // Normalize params to ensure consistent cache keys
-  const normalizedParams: VocabListParams = {
-    q: params.q?.trim() || undefined,
-    tags: params.tags?.length ? params.tags : undefined,
-    from: params.from || undefined,
-    to: params.to || undefined,
-    page: params.page || 1,
-    limit: params.limit || 20,
-  };
-
+export function useVocabs(filters: ListVocabParams) {
   return useQuery({
-    queryKey: vocabQueryKeys.list(normalizedParams),
-    queryFn: () => fetchVocabs(normalizedParams),
+    queryKey: qk.vocabs(filters),
+    queryFn: () => listVocabs(filters),
     placeholderData: keepPreviousData,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 30_000,
+    retry: (failureCount, error: any) => {
+      const status = error?.response?.status;
+      if (status && status >= 400 && status < 500) return false;
+      return failureCount < 2;
+    },
   });
 }

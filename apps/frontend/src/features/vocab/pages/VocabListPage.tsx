@@ -93,7 +93,7 @@ export const VocabListPage: React.FC = () => {
     dispatch(resetFilters());
   }, [dispatch]);
 
-  const totalPages = data ? Math.ceil(data.total / data.limit) : 0;
+  const totalPages = data ? Math.ceil(data.total / data.take) : 0;
   const isEmpty = data && data.items.length === 0;
 
   if (error) {

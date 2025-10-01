@@ -4,8 +4,8 @@ import { ReviewResult } from '@prisma/client';
 
 export class PaginatedVocabDoc {
   @ApiProperty({ example: 42 }) total!: number;
-  @ApiProperty({ example: 1 }) page!: number;
-  @ApiProperty({ example: 20 }) limit!: number;
+  @ApiProperty({ example: 1 }) skip!: number;
+  @ApiProperty({ example: 20 }) take!: number;
   @ApiProperty({ type: () => [VocabEntityDoc] }) items!: VocabEntityDoc[];
 }
 
