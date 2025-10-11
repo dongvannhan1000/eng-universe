@@ -6,9 +6,16 @@ import { HealthController } from './health.controller';
 import { PrismaModule } from './infra/prisma/prisma.module';
 import { CaptureBatchesModule } from './modules/capture-batches/capture-batches.module';
 import { VocabModule } from './modules/vocab/vocab.module';
+import { DecksModule } from './modules/decks/decks.module';
 
 @Module({
-  imports: [CommonModule, VocabModule, CaptureBatchesModule, PrismaModule],
+  imports: [
+    CommonModule,
+    VocabModule,
+    CaptureBatchesModule,
+    PrismaModule,
+    DecksModule,
+  ],
   controllers: [AppController, HealthController],
   providers: [AppService],
 })

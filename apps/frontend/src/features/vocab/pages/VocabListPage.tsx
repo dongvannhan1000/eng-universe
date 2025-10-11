@@ -93,6 +93,7 @@ export const VocabListPage: React.FC = () => {
     dispatch(resetFilters());
   }, [dispatch]);
 
+  const currentPage = data ? data.skip / data.take + 1 : 1;
   const totalPages = data ? Math.ceil(data.total / data.take) : 0;
   const isEmpty = data && data.items.length === 0;
 
@@ -162,7 +163,7 @@ export const VocabListPage: React.FC = () => {
         {data && totalPages > 1 && (
           <div className="mt-8">
             <Pagination
-              currentPage={data.page}
+              currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
             />

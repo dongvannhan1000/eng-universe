@@ -1,10 +1,25 @@
+type ReviewResult = "AGAIN" | "HARD" | "GOOD" | "EASY";
+
 export interface Vocab {
   id: number;
+  userId: number;
   word: string;
   meaningVi: string;
-  explanationEn: string;
+  explanationEn: string | null;
+  notes: string | null;
   tags: string[];
-  addedAt: string; // ISO
+  timecodeSec: number | null;
+  captureBatchId: number | null;
+  addedAt: string;
+  lastReviewedAt: string | null;
+  isSuspended: boolean;
+  dueAt: string;
+  intervalDays: number;
+  ease: number;
+  repetitions: number;
+  lapses: number;
+  lastResult: ReviewResult | null;
+  // Relations
 }
 
 export interface VocabListParams {
