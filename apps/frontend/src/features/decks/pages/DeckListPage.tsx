@@ -17,16 +17,44 @@ export const DeckListPage: React.FC = () => {
   const dispatch = useDispatch();
   const filters = useSelector(selectDeckFilters);
 
-  const { data: decks, isLoading, error } = useDecks(filters);
+  const { data: allDecks, isLoading, error } = useDecks();
+
+  const filteredDecks = useMemo(() => {
+    if (!allDecks) return [];
+
+    let result = allDecks;
+
+    // Filter by search query (matches slug, title, or description)
+    if (filters.q) {
+      const query = filters.q.toLowerCase().trim();
+      result = result.filter((deck) => {
+        return (
+          deck.slug.toLowerCase().includes(query) ||
+          deck.title.toLowerCase().includes(query) ||
+          (deck.description && deck.description.toLowerCase().includes(query)) ||
+          deck.tags.some((tag) => tag.toLowerCase().includes(query))
+        );
+      });
+    }
+
+    // Filter by selected tags
+    if (filters.tags.length > 0) {
+      result = result.filter((deck) => {
+        return filters.tags.some((filterTag) => deck.tags.includes(filterTag));
+      });
+    }
+
+    return result;
+  }, [allDecks, filters.q, filters.tags]);
 
   const availableTags = useMemo(() => {
-    if (!decks) return [];
+    if (!allDecks) return [];
     const tagSet = new Set<string>();
-    decks.forEach((deck) => {
+    allDecks.forEach((deck) => {
       deck.tags.forEach((tag) => tagSet.add(tag));
     });
     return Array.from(tagSet).sort();
-  }, [decks]);
+  }, [allDecks]);
 
   const handleSearchChange = useCallback(
     (query: string) => {
@@ -46,7 +74,7 @@ export const DeckListPage: React.FC = () => {
     dispatch(resetDeckFilters());
   }, [dispatch]);
 
-  const isEmpty = decks && decks.length === 0;
+  const isEmpty = filteredDecks.length === 0;
 
   if (error) {
     return (
@@ -92,15 +120,16 @@ export const DeckListPage: React.FC = () => {
         onClearFilters={handleClearFilters}
       />
 
-      {decks && (
+      {allDecks && (
         <div className="mb-6">
           <p className="text-sm text-muted-foreground">
-            Showing {decks.length} deck{decks.length === 1 ? "" : "s"}
+            Showing {filteredDecks.length} of {allDecks.length} deck
+            {filteredDecks.length === 1 ? "" : "s"}
           </p>
         </div>
       )}
 
-      <DeckList decks={decks || []} isLoading={isLoading} isEmpty={isEmpty || false} />
+      <DeckList decks={filteredDecks} isLoading={isLoading} isEmpty={isEmpty} />
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface DeckFiltersState {
-  q?: string;
-  tags?: string[];
+  q: string;
+  tags: string[];
 }
 
 const initialState: DeckFiltersState = {

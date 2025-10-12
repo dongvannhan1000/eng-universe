@@ -15,31 +15,9 @@ export type ListDecksParams = DeckListParams & {
   limit?: number;
 };
 
-/** Helper: build query string, bỏ các giá trị mặc định/rỗng */
-function buildSearch(params: ListDecksParams): string {
-  const sp = new URLSearchParams();
-
-  if (params.q) sp.set("q", params.q.trim());
-
-  if (params.tags && params.tags.length > 0) {
-    // backend dạng repeated ?tags=a&tags=b -> nếu cần, đổi sang forEach
-    // ở đây chuẩn hoá dạng "a,b" để giống ví dụ Vocab
-    sp.set("tags", params.tags.join(","));
-  }
-
-  if (params.cefr) sp.set("cefr", params.cefr);
-
-  // phân trang: chỉ gửi khi khác default
-  if (params.page && params.page > 1) sp.set("page", String(params.page));
-  if (params.limit && params.limit !== 20) sp.set("limit", String(params.limit));
-
-  return sp.toString();
-}
-
 /** GET /decks */
-export async function listDecks(params: ListDecksParams): Promise<Deck[]> {
-  const qs = buildSearch(params);
-  const url = qs ? `/decks?${qs}` : "/decks";
+export async function listDecks(): Promise<Deck[]> {
+  const url = "/decks";
 
   const res = await http.get(url);
   if (res.status >= 400) {
