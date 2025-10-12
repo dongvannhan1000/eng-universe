@@ -52,7 +52,7 @@ export async function getDeckById(id: number): Promise<Deck | null> {
 
 /** GET /decks/:deckId/items?page=&limit= */
 export async function listDeckItems(
-  deckId: number,
+  slug: string,
   page = 1,
   limit = 20,
 ): Promise<PaginatedDeckItem> {
@@ -61,7 +61,7 @@ export async function listDeckItems(
   if (limit !== 20) sp.set("limit", String(limit));
 
   const qs = sp.toString();
-  const url = qs ? `/decks/${deckId}/items?${qs}` : `/decks/${deckId}/items`;
+  const url = qs ? `/decks/${slug}/items?${qs}` : `/decks/${slug}/items`;
 
   const res = await http.get(url);
   if (res.status >= 400) {

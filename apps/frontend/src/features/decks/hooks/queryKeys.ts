@@ -4,4 +4,5 @@ export const deckQueryKeys = {
   details: () => [...deckQueryKeys.all(), "detail"] as const,
   detail: (id: number) => [...deckQueryKeys.details(), id] as const,
   detailBySlug: (slug: string) => [...deckQueryKeys.details(), slug] as const,
+  items: (slug: string) => [...deckQueryKeys.detailBySlug(slug), "items"] as const,
 };

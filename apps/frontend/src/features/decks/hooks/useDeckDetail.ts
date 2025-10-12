@@ -4,9 +4,9 @@ import { deckQueryKeys } from "../hooks/queryKeys";
 
 export function useDeckDetail(slug: string) {
   return useQuery({
-    queryKey: [...deckQueryKeys.list({}), "detail", slug],
+    queryKey: deckQueryKeys.detailBySlug(slug),
     queryFn: () => getDeckBySlug(slug),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
     enabled: !!slug,
   });
 }

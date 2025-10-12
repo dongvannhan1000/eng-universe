@@ -20,13 +20,14 @@ export const DeckDetailPage: React.FC = () => {
 
   // First fetch deck by slug to get the ID
   const { data: deck, isLoading: isDeckLoading, error: deckError } = useDeckDetail(slug || "");
-  const deckId = deck?.id || 0;
+
+  console.log(deck);
 
   const {
     data: itemsData,
     isLoading: isItemsLoading,
     error: itemsError,
-  } = useDeckItems(deckId, page, limit);
+  } = useDeckItems(slug || "", page, limit);
 
   useEffect(() => {
     return () => {

@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../infra/prisma/prisma.service';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckDto } from './dto/update-deck.dto';
+import { ListDeckItemsQueryDto } from './dto/list-deck-items-query.dto';
 
 @Injectable()
 export class DecksService {
@@ -17,8 +18,55 @@ export class DecksService {
     return 'This action adds a new deck';
   }
 
+  async findOneBySlug(slug: string) {
+    const deck = await this.prisma.publicDeck.findUnique({
+      where: { slug },
+    });
+
+    if (!deck) {
+      throw new NotFoundException(`Public deck with slug "${slug}" not found`);
+    }
+
+    return deck;
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} deck`;
+  }
+
+  async findItemsBySlug(slug: string, query: ListDeckItemsQueryDto) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+
+    const deck = await this.prisma.publicDeck.findUnique({
+      where: { slug },
+      select: { id: true },
+    });
+
+    if (!deck) {
+      throw new NotFoundException(`Public deck with slug "${slug}" not found`);
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await this.prisma.$transaction([
+      this.prisma.publicDeckItem.findMany({
+        where: { deckId: deck.id },
+        orderBy: { headword: 'asc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.publicDeckItem.count({
+        where: { deckId: deck.id },
+      }),
+    ]);
+
+    return {
+      total,
+      page,
+      limit,
+      items,
+    };
   }
 
   update(id: number, updateDeckDto: UpdateDeckDto) {
