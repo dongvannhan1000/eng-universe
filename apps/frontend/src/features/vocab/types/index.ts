@@ -22,6 +22,16 @@ export interface Vocab {
   // Relations
 }
 
+export interface CreateVocabInput {
+  word: string;
+  meaningVi: string;
+  tags: string[];
+  explanationEn?: string;
+  notes?: string;
+  timecodeSec?: number;
+  captureBatchId?: string;
+}
+
 export interface VocabListParams {
   q?: string;
   tags?: string[];
@@ -33,7 +43,7 @@ export interface VocabListParams {
 
 export interface PaginatedVocab {
   total: number;
-  page: number;
-  limit: number;
+  skip: number;
+  take: number;
   items: Vocab[];
 }

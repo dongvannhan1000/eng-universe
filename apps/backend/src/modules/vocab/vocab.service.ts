@@ -40,9 +40,9 @@ export class VocabService {
         dueAt: dto.dueAt ?? new Date(),
         isSuspended: dto.isSuspended ?? false,
       },
-      include: {
-        captureBatch: true,
-      },
+      // include: {
+      //   captureBatch: true,
+      // },
     });
 
     return vocab;

@@ -18,6 +18,7 @@ import { useVocabs } from "../hooks/useVocabs";
 import { VocabToolbar } from "../components/VocabToolbar";
 import { VocabularyList } from "../components/VocabularyList";
 import { Pagination } from "../../../components/Pagination";
+import { AddVocabDialog } from "../components/AddVocabDialog";
 
 export const VocabListPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -128,48 +129,51 @@ export const VocabListPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Vocabulary Learning</h1>
-          <p className="text-muted-foreground">
-            Discover and learn new English words with detailed explanations and examples.
-          </p>
-        </header>
-
-        <VocabToolbar
-          searchQuery={filters.q}
-          selectedTags={filters.tags}
-          fromDate={filters.from}
-          toDate={filters.to}
-          onSearchChange={handleSearchChange}
-          // onTagsChange={handleTagsChange}
-          onFromDateChange={handleFromDateChange}
-          onToDateChange={handleToDateChange}
-          onClearFilters={handleClearFilters}
-        />
-
-        {data && (
-          <div className="mb-6">
-            <p className="text-sm text-muted-foreground">
-              Showing {data.items.length} of {data.total} vocabularies
-              {filters.page > 1 && ` (page ${filters.page})`}
+    <div className="container mx-auto px-4 py-8">
+      <header className="mb-8">
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">All Vocabularies</h1>
+            <p className="text-muted-foreground">
+              Discover and learn new English words with detailed explanations and examples.
             </p>
           </div>
-        )}
+          <AddVocabDialog />
+        </div>
+      </header>
 
-        <VocabularyList vocabs={data?.items || []} isLoading={isLoading} isEmpty={isEmpty} />
+      <VocabToolbar
+        searchQuery={filters.q}
+        selectedTags={filters.tags}
+        fromDate={filters.from}
+        toDate={filters.to}
+        onSearchChange={handleSearchChange}
+        // onTagsChange={handleTagsChange}
+        onFromDateChange={handleFromDateChange}
+        onToDateChange={handleToDateChange}
+        onClearFilters={handleClearFilters}
+      />
 
-        {data && totalPages > 1 && (
-          <div className="mt-8">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          </div>
-        )}
-      </div>
+      {data && (
+        <div className="mb-6">
+          <p className="text-sm text-muted-foreground">
+            Showing {data.items.length} of {data.total} vocabularies
+            {filters.page > 1 && ` (page ${filters.page})`}
+          </p>
+        </div>
+      )}
+
+      <VocabularyList vocabs={data?.items || []} isLoading={isLoading} isEmpty={isEmpty} />
+
+      {data && totalPages > 1 && (
+        <div className="mt-8">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      )}
     </div>
   );
 };
