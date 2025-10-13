@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import {
   selectFilters,
   setQ,
-  setTags,
+  // setTags,
   setFrom,
   setTo,
   setPage,
@@ -61,12 +61,12 @@ export const VocabListPage: React.FC = () => {
     [dispatch],
   );
 
-  const handleTagsChange = useCallback(
-    (tags: string[]) => {
-      dispatch(setTags(tags));
-    },
-    [dispatch],
-  );
+  // const handleTagsChange = useCallback(
+  //   (tags: string[]) => {
+  //     dispatch(setTags(tags));
+  //   },
+  //   [dispatch],
+  // );
 
   const handleFromDateChange = useCallback(
     (date: string | null) => {
@@ -143,7 +143,7 @@ export const VocabListPage: React.FC = () => {
           fromDate={filters.from}
           toDate={filters.to}
           onSearchChange={handleSearchChange}
-          onTagsChange={handleTagsChange}
+          // onTagsChange={handleTagsChange}
           onFromDateChange={handleFromDateChange}
           onToDateChange={handleToDateChange}
           onClearFilters={handleClearFilters}

@@ -34,7 +34,7 @@ export const Layout: React.FC = () => {
                       : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   }`}
                 >
-                  Decks
+                  Collections
                 </Link>
                 <Link
                   to="/vocabs"
@@ -44,7 +44,7 @@ export const Layout: React.FC = () => {
                       : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   }`}
                 >
-                  All Vocabularies
+                  Laboratory
                 </Link>
               </div>
             </div>

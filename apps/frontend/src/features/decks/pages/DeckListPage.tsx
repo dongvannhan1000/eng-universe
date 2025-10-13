@@ -105,7 +105,7 @@ export const DeckListPage: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Vocabulary Decks</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Collections</h1>
         <p className="text-muted-foreground">
           Browse and explore curated vocabulary collections organized by topics and themes.
         </p>
@@ -123,7 +123,7 @@ export const DeckListPage: React.FC = () => {
       {allDecks && (
         <div className="mb-6">
           <p className="text-sm text-muted-foreground">
-            Showing {filteredDecks.length} of {allDecks.length} deck
+            Showing {filteredDecks.length} of {allDecks.length} collections
             {filteredDecks.length === 1 ? "" : "s"}
           </p>
         </div>
