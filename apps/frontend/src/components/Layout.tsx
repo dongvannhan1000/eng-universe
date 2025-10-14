@@ -46,6 +46,16 @@ export const Layout: React.FC = () => {
                 >
                   Laboratory
                 </Link>
+                <Link
+                  to="/review"
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive("/review")
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  }`}
+                >
+                  Review
+                </Link>
               </div>
             </div>
           </div>

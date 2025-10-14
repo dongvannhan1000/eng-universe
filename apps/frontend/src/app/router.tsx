@@ -3,6 +3,7 @@ import { VocabListPage } from "../features/vocab/pages/VocabListPage";
 import { DeckListPage } from "../features/decks/pages/DeckListPage";
 import { DeckDetailPage } from "../features/decks/pages/DeckDetailPage";
 import { Layout } from "../components/Layout";
+import { ReviewQueuePage } from "@/features/review/pages/ReviewQueuePage";
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
       {
         path: "vocabs",
         element: <VocabListPage />,
+      },
+      {
+        path: "review",
+        element: <ReviewQueuePage />,
       },
     ],
   },
