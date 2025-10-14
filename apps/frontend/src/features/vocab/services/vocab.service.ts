@@ -26,7 +26,6 @@ export async function listVocabs(params: ListVocabParams): Promise<PaginatedVoca
   const res = await http.get(`/vocab?${search.toString()}`);
   console.log(res.data);
   const parsed = PaginatedVocabSchema.safeParse(res.data);
-  console.log(parsed.error?.issues);
   if (!parsed.success) {
     // Log chi tiết schema error trong dev
     if (import.meta.env.DEV) {

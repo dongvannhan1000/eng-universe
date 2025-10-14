@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,12 +19,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { createVocab } from "../services/vocab.service";
+import { useSelector } from "react-redux";
+import { selectCaptureMode } from "../slices/captureModeSlice";
 import type { CreateVocabInput } from "../types";
 
 export function AddVocabDialog() {
   const [open, setOpen] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const queryClient = useQueryClient();
+  const captureMode = useSelector(selectCaptureMode);
 
   const [formData, setFormData] = useState<CreateVocabInput>({
     word: "",
@@ -38,6 +41,15 @@ export function AddVocabDialog() {
 
   const [tagInput, setTagInput] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (open && captureMode.enabled && captureMode.defaultTags.length > 0) {
+      setFormData((prev) => ({
+        ...prev,
+        tags: [...captureMode.defaultTags],
+      }));
+    }
+  }, [open, captureMode.enabled, captureMode.defaultTags]);
 
   const mutation = useMutation({
     mutationFn: createVocab,

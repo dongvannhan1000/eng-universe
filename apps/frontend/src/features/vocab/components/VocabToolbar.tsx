@@ -1,7 +1,7 @@
 import React from "react";
 import { SearchBar } from "../../../components/SearchBar";
 // import { TagMultiSelect } from "../../../components/TagMultiSelect";
-import { DateRangePicker } from "../../../components/DateRangePicker";
+// import { DateRangePicker } from "../../../components/DateRangePicker";
 
 interface VocabToolbarProps {
   searchQuery: string;
@@ -23,8 +23,8 @@ export const VocabToolbar = React.memo<VocabToolbarProps>(
     toDate,
     onSearchChange,
     // onTagsChange,
-    onFromDateChange,
-    onToDateChange,
+    // onFromDateChange,
+    // onToDateChange,
     onClearFilters,
   }) => {
     const hasActiveFilters = searchQuery || selectedTags.length > 0 || fromDate || toDate;
@@ -44,14 +44,14 @@ export const VocabToolbar = React.memo<VocabToolbarProps>(
             <TagMultiSelect selectedTags={selectedTags} onChange={onTagsChange} />
           </div> */}
 
-          <div className="lg:col-span-1">
+          {/* <div className="lg:col-span-1">
             <DateRangePicker
               from={fromDate}
               to={toDate}
               onFromChange={onFromDateChange}
               onToChange={onToDateChange}
             />
-          </div>
+          </div> */}
         </div>
 
         {hasActiveFilters && (

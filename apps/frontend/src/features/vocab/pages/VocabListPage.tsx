@@ -19,6 +19,7 @@ import { VocabToolbar } from "../components/VocabToolbar";
 import { VocabularyList } from "../components/VocabularyList";
 import { Pagination } from "../../../components/Pagination";
 import { AddVocabDialog } from "../components/AddVocabDialog";
+import { CaptureModeToggle } from "../components/CaptureModeToggle";
 
 export const VocabListPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -138,7 +139,10 @@ export const VocabListPage: React.FC = () => {
               Discover and learn new English words with detailed explanations and examples.
             </p>
           </div>
-          <AddVocabDialog />
+          <div className="flex gap-3">
+            <CaptureModeToggle />
+            <AddVocabDialog />
+          </div>
         </div>
       </header>
 
