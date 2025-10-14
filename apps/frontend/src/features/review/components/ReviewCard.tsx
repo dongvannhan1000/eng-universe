@@ -14,7 +14,12 @@ interface ReviewCardProps {
 
 export function ReviewCard({ card, onReview, isSubmitting }: ReviewCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [startTime] = useState(() => Date.now());
+  const [startTime, setStartTime] = useState(() => Date.now());
+
+  useEffect(() => {
+    setIsFlipped(false);
+    setStartTime(Date.now());
+  }, [card.id]);
 
   const handleFlip = () => {
     setIsFlipped(true);

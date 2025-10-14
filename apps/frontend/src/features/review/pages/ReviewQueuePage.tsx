@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useReviewQueue } from "../hooks/useReviewQueue";
 import { useSubmitReview } from "../hooks/useSubmitReview";
 import { ReviewCard } from "../components/ReviewCard";
@@ -18,14 +18,20 @@ export function ReviewQueuePage() {
   const [completedCards, setCompletedCards] = useState<number[]>([]);
   const [sessionStartTime] = useState(() => Date.now());
   const [queueParams] = useState({ take: 50 });
+  const [initialTotalCards, setInitialTotalCards] = useState<number | null>(null);
 
   const { data, isLoading, error, refetch } = useReviewQueue(queueParams);
   const submitReview = useSubmitReview();
 
-  // Filter out completed cards from the queue
+  useEffect(() => {
+    if (data?.items && initialTotalCards === null) {
+      setInitialTotalCards(data.items.length);
+    }
+  }, [data?.items, initialTotalCards]);
+
   const remainingCards = data?.items.filter((card) => !completedCards.includes(card.id)) || [];
   const currentCard = remainingCards[currentIndex];
-  const totalCards = data?.items.length || 0;
+  const totalCards = initialTotalCards || 0;
   const completedCount = completedCards.length;
 
   const handleReview = async (result: ReviewResult, durationSec: number) => {
@@ -40,11 +46,7 @@ export function ReviewQueuePage() {
         },
       });
 
-      // Mark card as completed
       setCompletedCards((prev) => [...prev, currentCard.id]);
-
-      // Move to next card or stay at current index (since we filtered out completed)
-      // The current index will automatically show the next card due to filtering
     } catch (err) {
       console.error("[v0] Failed to submit review:", err);
     }
@@ -53,13 +55,12 @@ export function ReviewQueuePage() {
   const handleRestart = () => {
     setCurrentIndex(0);
     setCompletedCards([]);
+    setInitialTotalCards(null);
     refetch();
   };
 
-  // Calculate elapsed time
   const elapsedSec = Math.floor((Date.now() - sessionStartTime) / 1000);
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
@@ -69,7 +70,6 @@ export function ReviewQueuePage() {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 max-w-2xl mx-auto">
@@ -82,7 +82,6 @@ export function ReviewQueuePage() {
     );
   }
 
-  // Empty state - no cards due
   if (totalCards === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
@@ -91,7 +90,6 @@ export function ReviewQueuePage() {
     );
   }
 
-  // Complete state - all cards reviewed
   if (remainingCards.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
@@ -100,7 +98,6 @@ export function ReviewQueuePage() {
     );
   }
 
-  // Review in progress
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
       <ReviewProgress
