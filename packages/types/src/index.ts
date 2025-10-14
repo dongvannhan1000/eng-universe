@@ -6,7 +6,6 @@ export const EnvSchema = z.object({
   DATABASE_URL: z.string().url(),
   FRONTEND_URL: z.string().url().optional(),
 });
-
 export type Env = z.infer<typeof EnvSchema>;
 
 export const ReviewResultSchema = z.enum(["AGAIN", "HARD", "GOOD", "EASY"]);
@@ -51,5 +50,4 @@ export const PaginatedVocabSchema = z.object({
   take: z.number().int().min(1),
   total: z.number().int().nonnegative(),
 });
-
 export type PaginatedVocab = z.infer<typeof PaginatedVocabSchema>;
