@@ -6,7 +6,9 @@
     "composite": false,
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*", "test/**/*"]
 }

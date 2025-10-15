@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CommonModule } from './common/common.module';
@@ -8,10 +9,13 @@ import { CaptureBatchesModule } from './modules/capture-batches/capture-batches.
 import { VocabModule } from './modules/vocab/vocab.module';
 import { DecksModule } from './modules/decks/decks.module';
 import { ReviewModule } from './modules/review/review.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 
 @Module({
   imports: [
     CommonModule,
+    AuthModule,
     VocabModule,
     CaptureBatchesModule,
     PrismaModule,
@@ -19,6 +23,12 @@ import { ReviewModule } from './modules/review/review.module';
     ReviewModule,
   ],
   controllers: [AppController, HealthController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

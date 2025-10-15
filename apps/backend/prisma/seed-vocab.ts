@@ -28,6 +28,7 @@ async function main() {
     update: {},
     create: {
       email: 'demo@learninglab.local',
+      password: 'demo',
       name: 'Demo User',
     },
   });
