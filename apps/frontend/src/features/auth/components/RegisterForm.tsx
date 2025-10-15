@@ -12,9 +12,10 @@ import { Label } from "@/components/ui/label";
 
 interface RegisterFormProps {
   onSuccess: () => void;
+  onSwitchToLogin: () => void;
 }
 
-export function RegisterForm({ onSuccess }: RegisterFormProps) {
+export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading, error } = useSelector((state: RootState) => state.auth);
   const [username, setUsername] = useState("");
@@ -40,7 +41,10 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
 
     try {
       await dispatch(registerUser({ username, password, name: name || undefined })).unwrap();
-      onSuccess();
+      // Show success and switch to login
+      setValidationError("");
+      alert("Registration successful! Please login with your credentials.");
+      onSwitchToLogin();
     } catch (err) {
       // Error is handled by Redux
     }

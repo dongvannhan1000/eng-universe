@@ -47,7 +47,10 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
           </TabsContent>
 
           <TabsContent value="register" className="mt-4">
-            <RegisterForm onSuccess={() => onOpenChange(false)} />
+            <RegisterForm
+              onSuccess={() => onOpenChange(false)}
+              onSwitchToLogin={() => setActiveTab("login")}
+            />
           </TabsContent>
 
           <TabsContent value="forgot" className="mt-4">

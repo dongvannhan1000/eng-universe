@@ -17,10 +17,8 @@ export const loginUser = createAsyncThunk("auth/login", async (credentials: Logi
 });
 
 export const registerUser = createAsyncThunk("auth/register", async (data: RegisterRequest) => {
-  await authApi.register(data);
-  // After registration, fetch the user profile
-  const user = await authApi.getCurrentUser();
-  return { user };
+  const response = await authApi.register(data);
+  return response;
 });
 
 export const verifyAuth = createAsyncThunk("auth/verify", async () => {
@@ -63,10 +61,8 @@ const authSlice = createSlice({
       state.isLoading = true;
       state.error = null;
     });
-    builder.addCase(registerUser.fulfilled, (state, action) => {
+    builder.addCase(registerUser.fulfilled, (state) => {
       state.isLoading = false;
-      state.user = action.payload.user;
-      state.isAuthenticated = true;
       state.error = null;
     });
     builder.addCase(registerUser.rejected, (state, action) => {
