@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "@/app/store";
+import { setAuthActiveTab } from "../slices/authDialogSlice";
 import {
   Dialog,
   DialogContent,
@@ -19,7 +21,8 @@ interface AuthDialogProps {
 }
 
 export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
-  const [activeTab, setActiveTab] = useState<"login" | "register" | "forgot">("login");
+  const dispatch = useDispatch();
+  const activeTab = useSelector((s: RootState) => s.authDialog.authActiveTab);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -31,7 +34,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
 
         <Tabs
           value={activeTab}
-          onValueChange={(v) => setActiveTab(v as typeof activeTab)}
+          onValueChange={(v) => dispatch(setAuthActiveTab(v as typeof activeTab))}
           className="w-full"
         >
           <TabsList className="grid w-full grid-cols-2">
@@ -42,19 +45,19 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
           <TabsContent value="login" className="mt-4">
             <LoginForm
               onSuccess={() => onOpenChange(false)}
-              onForgotPassword={() => setActiveTab("forgot")}
+              onForgotPassword={() => dispatch(setAuthActiveTab("forgot"))}
             />
           </TabsContent>
 
           <TabsContent value="register" className="mt-4">
             <RegisterForm
               onSuccess={() => onOpenChange(false)}
-              onSwitchToLogin={() => setActiveTab("login")}
+              onSwitchToLogin={() => dispatch(setAuthActiveTab("login"))}
             />
           </TabsContent>
 
           <TabsContent value="forgot" className="mt-4">
-            <ForgotPasswordForm onBack={() => setActiveTab("login")} />
+            <ForgotPasswordForm onBack={() => dispatch(setAuthActiveTab("login"))} />
           </TabsContent>
         </Tabs>
       </DialogContent>

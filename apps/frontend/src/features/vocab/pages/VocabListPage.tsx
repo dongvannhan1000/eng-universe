@@ -21,10 +21,13 @@ import { Pagination } from "../../../components/Pagination";
 import { AddVocabDialog } from "../components/AddVocabDialog";
 import { CaptureModeToggle } from "../components/CaptureModeToggle";
 
+import type { RootState } from "@/app/store";
+
 export const VocabListPage: React.FC = () => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const filters = useSelector(selectFilters);
+  const { isAuthenticated } = useSelector((s: RootState) => s.auth);
 
   const { data, isLoading, error } = useVocabs(filters);
 
@@ -134,14 +137,15 @@ export const VocabListPage: React.FC = () => {
       <header className="mb-8">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">All Vocabularies</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-2">My Constellation</h1>
             <p className="text-muted-foreground">
-              Discover and learn new English words with detailed explanations and examples.
+              Curate your galaxy of words — each star a memory.
             </p>
           </div>
           <div className="flex gap-3">
             <CaptureModeToggle />
-            <AddVocabDialog />
+            {/* Add mới từ vựng */}
+            {isAuthenticated && <AddVocabDialog />}
           </div>
         </div>
       </header>

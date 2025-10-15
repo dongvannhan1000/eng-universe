@@ -18,7 +18,7 @@ import { Telescope, Sparkles, Rocket } from "lucide-react";
 export const Layout: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { isAuthenticated, isLoading } = useSelector((state: RootState) => state.auth);
-  const { authDialogOpen } = useSelector((s: RootState) => s.authDialog);
+  const { authDialogOpen } = useSelector((state: RootState) => state.authDialog);
 
   useEffect(() => {
     dispatch(verifyAuth());
@@ -67,46 +67,46 @@ export const Layout: React.FC = () => {
               </Link>
 
               {/* Primary Nav */}
-              {isAuthenticated && (
-                <div className="hidden md:flex gap-1">
-                  <NavLink
-                    to="/decks"
-                    className={({ isActive }) =>
-                      `${navLinkBase} ${isActive ? navLinkActive : navLinkIdle}`
-                    }
-                    aria-label="Word Observatory — Scan the sky for new words"
-                    title="Word Observatory — Scan the sky for new words"
-                    end={false}
-                  >
-                    <Telescope className="mr-2 h-4 w-4" />
-                    Word Observatory
-                  </NavLink>
+              {/* {isAuthenticated && ( */}
+              <div className="hidden md:flex gap-1">
+                <NavLink
+                  to="/decks"
+                  className={({ isActive }) =>
+                    `${navLinkBase} ${isActive ? navLinkActive : navLinkIdle}`
+                  }
+                  aria-label="Word Observatory — Scan the sky for new words"
+                  title="Word Observatory — Scan the sky for new words"
+                  end={false}
+                >
+                  <Telescope className="mr-2 h-4 w-4" />
+                  Word Observatory
+                </NavLink>
 
-                  <NavLink
-                    to="/vocabs"
-                    className={({ isActive }) =>
-                      `${navLinkBase} ${isActive ? navLinkActive : navLinkIdle}`
-                    }
-                    aria-label="My Constellation — Curate and organize your stars"
-                    title="My Constellation — Curate and organize your stars"
-                  >
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    My Constellation
-                  </NavLink>
+                <NavLink
+                  to="/vocabs"
+                  className={({ isActive }) =>
+                    `${navLinkBase} ${isActive ? navLinkActive : navLinkIdle}`
+                  }
+                  aria-label="My Constellation — Curate and organize your stars"
+                  title="My Constellation — Curate and organize your stars"
+                >
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  My Constellation
+                </NavLink>
 
-                  <NavLink
-                    to="/review"
-                    className={({ isActive }) =>
-                      `${navLinkBase} ${isActive ? navLinkActive : navLinkIdle}`
-                    }
-                    aria-label="Training Mission — Complete today's review flight"
-                    title="Training Mission — Complete today's review flight"
-                  >
-                    <Rocket className="mr-2 h-4 w-4" />
-                    Training Mission
-                  </NavLink>
-                </div>
-              )}
+                <NavLink
+                  to="/review"
+                  className={({ isActive }) =>
+                    `${navLinkBase} ${isActive ? navLinkActive : navLinkIdle}`
+                  }
+                  aria-label="Training Mission — Complete today's review flight"
+                  title="Training Mission — Complete today's review flight"
+                >
+                  <Rocket className="mr-2 h-4 w-4" />
+                  Training Mission
+                </NavLink>
+              </div>
+              {/* )} */}
             </div>
 
             {/* Auth / User */}
@@ -129,16 +129,16 @@ export const Layout: React.FC = () => {
       </nav>
 
       {/* Optional sub-header for page-level context (can hide on small screens) */}
-      {isAuthenticated && (
-        <div className="border-b border-border bg-background/60">
-          <div className="container mx-auto px-4 py-2 text-xs sm:text-sm text-muted-foreground">
-            <span className="align-middle">🚀 Ready for today’s Training Mission? </span>
-            <Link to="/review" className="ml-2 underline underline-offset-4 hover:text-foreground">
-              Start now
-            </Link>
-          </div>
+      {/* {isAuthenticated && ( */}
+      <div className="border-b border-border bg-background/60">
+        <div className="container mx-auto px-4 py-2 text-xs sm:text-sm text-muted-foreground">
+          <span className="align-middle">🚀 Ready for today’s Training Mission? </span>
+          <Link to="/review" className="ml-2 underline underline-offset-4 hover:text-foreground">
+            Start now
+          </Link>
         </div>
-      )}
+      </div>
+      {/* )} */}
 
       {/* Main */}
       <main id="main" className="container mx-auto px-4 py-6">
@@ -149,7 +149,7 @@ export const Layout: React.FC = () => {
       <AuthDialog
         open={authDialogOpen}
         onOpenChange={(open) =>
-          open ? dispatch(openAuthDialog(undefined)) : dispatch(closeAuthDialog())
+          open ? dispatch(openAuthDialog({ tab: "login" })) : dispatch(closeAuthDialog())
         }
       />
     </div>
