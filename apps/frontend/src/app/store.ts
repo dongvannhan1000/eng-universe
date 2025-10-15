@@ -3,6 +3,7 @@ import filtersReducer from "../features/vocab/slices/filtersSlice";
 import deckFiltersReducer from "../features/decks/slices/deckFiltersSlice";
 import deckDetailReducer from "../features/decks/slices/deckDetailSlice";
 import captureModeReducer from "../features/vocab/slices/captureModeSlice";
+import authReducer from "../features/auth/slices/authSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     deckFilters: deckFiltersReducer,
     deckDetail: deckDetailReducer,
     captureMode: captureModeReducer,
+    auth: authReducer,
   },
 });
 

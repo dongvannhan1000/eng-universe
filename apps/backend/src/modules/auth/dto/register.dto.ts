@@ -6,7 +6,7 @@ export class RegisterDto {
     description: 'Username (will be mapped to email)',
     example: 'user@example.com',
   })
-  @IsEmail()
+  @IsString()
   username!: string;
 
   @ApiProperty({

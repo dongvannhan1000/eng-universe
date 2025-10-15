@@ -12,8 +12,10 @@ import { DecksService } from './decks.service';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckDto } from './dto/update-deck.dto';
 import { ListDeckItemsQueryDto } from './dto/list-deck-items-query.dto';
+import { Public } from '../auth/decorators/public.decorator';
 
 @Controller('api/decks')
+@Public()
 export class DecksController {
   constructor(private readonly decksService: DecksService) {}
 

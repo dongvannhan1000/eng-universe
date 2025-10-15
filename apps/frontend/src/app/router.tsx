@@ -3,6 +3,7 @@ import { VocabListPage } from "../features/vocab/pages/VocabListPage";
 import { DeckListPage } from "../features/decks/pages/DeckListPage";
 import { DeckDetailPage } from "../features/decks/pages/DeckDetailPage";
 import { Layout } from "../components/Layout";
+import { ProtectedRoute } from "../components/ProtectedRoute";
 import { ReviewQueuePage } from "@/features/review/pages/ReviewQueuePage";
 
 export const router = createBrowserRouter([
@@ -24,11 +25,19 @@ export const router = createBrowserRouter([
       },
       {
         path: "vocabs",
-        element: <VocabListPage />,
+        element: (
+          <ProtectedRoute>
+            <VocabListPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "review",
-        element: <ReviewQueuePage />,
+        element: (
+          <ProtectedRoute>
+            <ReviewQueuePage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
