@@ -61,13 +61,14 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="register-name">Name (optional)</Label>
+        <Label htmlFor="register-name">Name</Label>
         <Input
           id="register-name"
           type="text"
           placeholder="Your name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          required
           disabled={isLoading}
         />
       </div>

@@ -22,6 +22,7 @@ import { AddVocabDialog } from "../components/AddVocabDialog";
 import { CaptureModeToggle } from "../components/CaptureModeToggle";
 
 import type { RootState } from "@/app/store";
+import { motion } from "framer-motion";
 
 export const VocabListPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -133,55 +134,62 @@ export const VocabListPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <header className="mb-8">
-        <div className="flex items-start justify-between gap-4 mb-4">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">My Constellation</h1>
-            <p className="text-muted-foreground">
-              Curate your galaxy of words — each star a memory.
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: 0.08 }}
+    >
+      <div className="container mx-auto px-4 py-8">
+        <header className="mb-8">
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">My Constellation</h1>
+              <p className="text-muted-foreground">
+                Curate your galaxy of words — each star a memory.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <CaptureModeToggle />
+              {/* Add mới từ vựng */}
+              {isAuthenticated && <AddVocabDialog />}
+            </div>
+          </div>
+        </header>
+
+        <VocabToolbar
+          searchQuery={filters.q}
+          selectedTags={filters.tags}
+          fromDate={filters.from}
+          toDate={filters.to}
+          onSearchChange={handleSearchChange}
+          // onTagsChange={handleTagsChange}
+          onFromDateChange={handleFromDateChange}
+          onToDateChange={handleToDateChange}
+          onClearFilters={handleClearFilters}
+        />
+
+        {data && (
+          <div className="mb-6">
+            <p className="text-sm text-muted-foreground">
+              Showing <span className="font-medium">{data.items.length}</span> of{" "}
+              <span className="font-medium">{data.total}</span> vocabularies
+              {filters.page > 1 && ` (page ${filters.page})`}
             </p>
           </div>
-          <div className="flex gap-3">
-            <CaptureModeToggle />
-            {/* Add mới từ vựng */}
-            {isAuthenticated && <AddVocabDialog />}
+        )}
+
+        <VocabularyList vocabs={data?.items || []} isLoading={isLoading} isEmpty={isEmpty} />
+
+        {data && totalPages > 1 && (
+          <div className="mt-8">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           </div>
-        </div>
-      </header>
-
-      <VocabToolbar
-        searchQuery={filters.q}
-        selectedTags={filters.tags}
-        fromDate={filters.from}
-        toDate={filters.to}
-        onSearchChange={handleSearchChange}
-        // onTagsChange={handleTagsChange}
-        onFromDateChange={handleFromDateChange}
-        onToDateChange={handleToDateChange}
-        onClearFilters={handleClearFilters}
-      />
-
-      {data && (
-        <div className="mb-6">
-          <p className="text-sm text-muted-foreground">
-            Showing {data.items.length} of {data.total} vocabularies
-            {filters.page > 1 && ` (page ${filters.page})`}
-          </p>
-        </div>
-      )}
-
-      <VocabularyList vocabs={data?.items || []} isLoading={isLoading} isEmpty={isEmpty} />
-
-      {data && totalPages > 1 && (
-        <div className="mt-8">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </motion.div>
   );
 };

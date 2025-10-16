@@ -13,6 +13,8 @@ import { useDecks } from "../hooks/useDecks";
 import { DeckToolbar } from "../components/DeckToolBar";
 import { DeckList } from "../components/DeckList";
 
+import { motion } from "framer-motion";
+
 export const DeckListPage: React.FC = () => {
   const dispatch = useDispatch();
   const filters = useSelector(selectDeckFilters);
@@ -103,33 +105,69 @@ export const DeckListPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Collections</h1>
-        <p className="text-muted-foreground">
-          Browse and explore curated vocabulary collections organized by topics and themes.
-        </p>
-      </header>
-
-      <DeckToolbar
-        searchQuery={filters?.q || ""}
-        selectedTags={filters?.tags || []}
-        availableTags={availableTags}
-        onSearchChange={handleSearchChange}
-        onTagsChange={handleTagsChange}
-        onClearFilters={handleClearFilters}
-      />
-
-      {allDecks && (
-        <div className="mb-6">
-          <p className="text-sm text-muted-foreground">
-            Showing {filteredDecks.length} of {allDecks.length} collections
-            {filteredDecks.length === 1 ? "" : "s"}
+    <div className="relative">
+      <div className="container mx-auto px-4 py-8">
+        <motion.header
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+          className="mb-8"
+        >
+          <h1 className="text-3xl font-bold text-foreground mb-2">Word Observatory</h1>
+          <p className="text-muted-foreground max-w-2xl">
+            Explore the <span className="font-medium">constellations of vocabulary</span> — where
+            each word is a star and every meaning connects to another. Expand your English universe,
+            one theme at a time.
           </p>
-        </div>
-      )}
+        </motion.header>
+        {/* <header className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Collections</h1>
+          <p className="text-muted-foreground">
+            Browse and explore curated vocabulary collections organized by topics and themes.
+          </p>
+        </header>
 
-      <DeckList decks={filteredDecks} isLoading={isLoading} isEmpty={isEmpty} />
+        <DeckToolbar
+          searchQuery={filters?.q || ""}
+          selectedTags={filters?.tags || []}
+          availableTags={availableTags}
+          onSearchChange={handleSearchChange}
+          onTagsChange={handleTagsChange}
+          onClearFilters={handleClearFilters}
+        /> */}
+
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.05 }}
+        >
+          <DeckToolbar
+            searchQuery={filters?.q || ""}
+            selectedTags={filters?.tags || []}
+            availableTags={availableTags}
+            onSearchChange={handleSearchChange}
+            onTagsChange={handleTagsChange}
+            onClearFilters={handleClearFilters}
+          />
+
+          {allDecks && (
+            <div className="mb-6">
+              <p className="text-sm text-muted-foreground">
+                Showing <span className="font-medium">{filteredDecks.length}</span> of{" "}
+                <span className="font-medium">{allDecks.length}</span> vocabulary constellations
+              </p>
+            </div>
+          )}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.08 }}
+        >
+          <DeckList decks={filteredDecks} isLoading={isLoading} isEmpty={isEmpty} />
+        </motion.div>
+      </div>
     </div>
   );
 };

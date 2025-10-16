@@ -12,6 +12,7 @@ import { Pagination } from "../../../components/Pagination";
 import { Button } from "../../../components/ui/button";
 import { Badge } from "../../../components/ui/badge";
 import { Skeleton } from "../../../components/ui/skeleton";
+import { motion } from "framer-motion";
 
 export const DeckDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -20,8 +21,6 @@ export const DeckDetailPage: React.FC = () => {
 
   // First fetch deck by slug to get the ID
   const { data: deck, isLoading: isDeckLoading, error: deckError } = useDeckDetail(slug || "");
-
-  console.log(deck);
 
   const {
     data: itemsData,
@@ -111,94 +110,101 @@ export const DeckDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-6">
-        <Link to="/decks">
-          <Button variant="ghost" size="sm" className="mb-4">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            Back to Decks
-          </Button>
-        </Link>
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: 0.08 }}
+    >
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Link to="/decks">
+            <Button variant="ghost" size="sm" className="mb-4">
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              Back to Decks
+            </Button>
+          </Link>
 
-        {isDeckLoading ? (
-          <div className="space-y-3">
-            <Skeleton className="h-10 w-3/4" />
-            <Skeleton className="h-5 w-full" />
-            <Skeleton className="h-5 w-2/3" />
-            <div className="flex gap-2 mt-4">
-              <Skeleton className="h-6 w-20" />
-              <Skeleton className="h-6 w-24" />
+          {isDeckLoading ? (
+            <div className="space-y-3">
+              <Skeleton className="h-10 w-3/4" />
+              <Skeleton className="h-5 w-full" />
+              <Skeleton className="h-5 w-2/3" />
+              <div className="flex gap-2 mt-4">
+                <Skeleton className="h-6 w-20" />
+                <Skeleton className="h-6 w-24" />
+              </div>
             </div>
-          </div>
-        ) : (
-          deck && (
-            <div>
-              <div className="flex items-start justify-between mb-3">
-                <h1 className="text-3xl font-bold text-foreground">{deck.title}</h1>
-                {deck.cefr && (
-                  <Badge variant="outline" className="text-sm">
-                    {deck.cefr}
-                  </Badge>
+          ) : (
+            deck && (
+              <div>
+                <div className="flex items-start justify-between mb-3">
+                  <h1 className="text-3xl font-bold text-foreground">{deck.title}</h1>
+                  {deck.cefr && (
+                    <Badge variant="outline" className="text-sm">
+                      {deck.cefr}
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-muted-foreground mb-4 leading-relaxed">
+                  {deck.description || "No description available"}
+                </p>
+                <div className="flex items-center gap-4 mb-4">
+                  <span className="text-sm text-muted-foreground">
+                    Created {new Date(deck.createdAt).toLocaleDateString()}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    Updated {new Date(deck.updatedAt).toLocaleDateString()}
+                  </span>
+                </div>
+                {deck.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {deck.tags.map((tag) => (
+                      <Badge key={tag} variant="secondary">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
                 )}
               </div>
-              <p className="text-muted-foreground mb-4 leading-relaxed">
-                {deck.description || "No description available"}
+            )
+          )}
+        </div>
+
+        <div className="border-t border-border pt-6">
+          {itemsData && (
+            <div className="mb-6">
+              <p className="text-sm text-muted-foreground">
+                Showing <span className="font-medium">{itemsData.items.length}</span> of{" "}
+                <span className="font-medium">{itemsData.total}</span> items
+                {page > 1 && ` (page ${page})`}
               </p>
-              <div className="flex items-center gap-4 mb-4">
-                <span className="text-sm text-muted-foreground">
-                  Created {new Date(deck.createdAt).toLocaleDateString()}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  Updated {new Date(deck.updatedAt).toLocaleDateString()}
-                </span>
-              </div>
-              {deck.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {deck.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              )}
             </div>
-          )
-        )}
+          )}
+
+          <DeckItemList
+            items={itemsData?.items || []}
+            isLoading={isItemsLoading}
+            isEmpty={isEmpty || false}
+          />
+
+          {itemsData && totalPages > 1 && (
+            <div className="mt-8">
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          )}
+        </div>
       </div>
-
-      <div className="border-t border-border pt-6">
-        {itemsData && (
-          <div className="mb-6">
-            <p className="text-sm text-muted-foreground">
-              Showing {itemsData.items.length} of {itemsData.total} items
-              {page > 1 && ` (page ${page})`}
-            </p>
-          </div>
-        )}
-
-        <DeckItemList
-          items={itemsData?.items || []}
-          isLoading={isItemsLoading}
-          isEmpty={isEmpty || false}
-        />
-
-        {itemsData && totalPages > 1 && (
-          <div className="mt-8">
-            <Pagination
-              currentPage={page}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          </div>
-        )}
-      </div>
-    </div>
+    </motion.div>
   );
 };

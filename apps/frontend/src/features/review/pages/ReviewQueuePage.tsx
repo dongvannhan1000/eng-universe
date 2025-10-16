@@ -12,6 +12,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import type { ReviewResult } from "../types";
+import { motion } from "framer-motion";
 
 export function ReviewQueuePage() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -99,29 +100,35 @@ export function ReviewQueuePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
-      <ReviewProgress
-        completed={completedCount}
-        total={totalCards}
-        remaining={remainingCards.length}
-      />
-
-      <div className="flex justify-center">
-        <ReviewCard
-          card={currentCard}
-          onReview={handleReview}
-          isSubmitting={submitReview.isPending}
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: 0.08 }}
+    >
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        <ReviewProgress
+          completed={completedCount}
+          total={totalCards}
+          remaining={remainingCards.length}
         />
-      </div>
 
-      {submitReview.isError && (
-        <div className="max-w-2xl mx-auto">
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>Failed to submit review. Please try again.</AlertDescription>
-          </Alert>
+        <div className="flex justify-center">
+          <ReviewCard
+            card={currentCard}
+            onReview={handleReview}
+            isSubmitting={submitReview.isPending}
+          />
         </div>
-      )}
-    </div>
+
+        {submitReview.isError && (
+          <div className="max-w-2xl mx-auto">
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>Failed to submit review. Please try again.</AlertDescription>
+            </Alert>
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 }
