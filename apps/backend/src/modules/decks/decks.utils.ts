@@ -71,7 +71,7 @@ function buildDatamuseUrl(topic: string) {
   const q = topic.trim().replace(/\s+/g, ' '); // normalize spaces
   const params = new URLSearchParams({
     ml: q,
-    max: '50',
+    max: '100',
     md: 'dp',
   });
   return `https://api.datamuse.com/words?${params.toString()}`;
@@ -125,26 +125,49 @@ function bestMeaning(
   return { pos: m.partOfSpeech, definition: d.definition, example: d.example };
 }
 
-async function collocationsFor(word: string): Promise<string[]> {
-  // rel_jjb: adjectives that often modify the noun; rel_jja: nouns modified by the adjective
-  const [adj2noun, noun2adj] = await Promise.all([
-    getJson<{ word: string }[]>(
-      `https://api.datamuse.com/words?rel_jjb=${encodeURIComponent(word)}&max=5`,
-    ),
-    getJson<{ word: string }[]>(
-      `https://api.datamuse.com/words?rel_jja=${encodeURIComponent(word)}&max=5`,
-    ),
-  ]);
-  const a = adj2noun.map((x) => `${x.word} ${word}`);
-  const b = noun2adj.map((x) => `${word} ${x.word}`);
-  // unique + remove weird chars
-  return Array.from(new Set([...a, ...b])).filter((s) => s.length <= 40);
-}
+// async function collocationsFor(word: string): Promise<string[]> {
+//   // rel_jjb: adjectives that often modify the noun; rel_jja: nouns modified by the adjective
+//   const [adj2noun, noun2adj] = await Promise.all([
+//     getJson<{ word: string }[]>(
+//       `https://api.datamuse.com/words?rel_jjb=${encodeURIComponent(word)}&max=5`,
+//     ),
+//     getJson<{ word: string }[]>(
+//       `https://api.datamuse.com/words?rel_jja=${encodeURIComponent(word)}&max=5`,
+//     ),
+//   ]);
+//   const a = adj2noun.map((x) => `${x.word} ${word}`);
+//   const b = noun2adj.map((x) => `${word} ${x.word}`);
+//   // unique + remove weird chars
+//   return Array.from(new Set([...a, ...b])).filter((s) => s.length <= 40);
+// }
 
 async function enrichHeadword(
   hw: string,
   dmIndex: Map<string, DatamuseWord>,
 ): Promise<CacheItem> {
+  // const collos = await collocationsFor(hw).catch(() => []);
+
+  const dm = dmIndex.get(hw.toLowerCase());
+  const dmDef = fromDatamuseDef(dm?.defs);
+
+  if (dmDef?.definition) {
+    const item: CacheItem = {
+      headword: hw,
+      pos: mapTagPos(dm?.tags) ?? dmDef.pos ?? null,
+      definition: dmDef.definition,
+      example: null,
+      ipa: null,
+      collocations: [],
+      tags: [],
+      source: 'datamuse',
+      sourceAttribution: 'Datamuse',
+      sourceUrl: null,
+      license: 'Datamuse API',
+      lang: 'en',
+    };
+    return item;
+  }
+
   const dict = await getJson<DictEntry[]>(
     `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(hw)}`,
   ).catch(() => null);
@@ -152,25 +175,22 @@ async function enrichHeadword(
   const ipa = entry ? bestPhonetic(entry) : undefined;
   const m = entry ? bestMeaning(entry) : undefined;
 
-  const collos = await collocationsFor(hw).catch(() => []);
-
-  const dm = dmIndex.get(hw.toLowerCase());
-  const dmDef = fromDatamuseDef(dm?.defs);
-
-  return {
+  const item: CacheItem = {
     headword: hw,
     pos: m?.pos ?? mapTagPos(dm?.tags) ?? dmDef?.pos ?? null,
     definition: m?.definition ?? dmDef?.definition ?? null,
     example: m?.example ?? null,
     ipa: ipa ?? null,
-    collocations: collos.slice(0, 5),
+    collocations: [],
     tags: [],
-    source: 'dictionaryapi.dev;datamuse',
-    sourceAttribution: 'DictionaryAPI.dev; Datamuse',
+    source: m?.definition ? 'dictionaryapi.dev' : 'datamuse',
+    sourceAttribution: m?.definition ? 'DictionaryAPI.dev' : 'Datamuse',
     sourceUrl: null,
     license: 'Mixed: see attribution',
     lang: 'en',
   };
+
+  return item;
 }
 
 async function fetchDeckFromRemote(topic: string): Promise<CacheItem[]> {
@@ -192,22 +212,23 @@ async function fetchDeckFromRemote(topic: string): Promise<CacheItem[]> {
 
   // basic concurrency (pool=6) để đỡ “đập” API
   const pool = 6;
+  const limit = 60;
   const out: CacheItem[] = [];
-  for (let i = 0; i < headwords.length; i += pool) {
+  for (let i = 0; i < headwords.length && out.length < limit; i += pool) {
     const chunk = headwords.slice(i, i + pool);
     const part = await Promise.all(
       chunk.map((hw) => enrichHeadword(hw, dmIndex)),
     );
-    out.push(...part);
+
+    const remaining = limit - out.length;
+    const valid = part.filter(Boolean).slice(0, remaining) as CacheItem[];
+    out.push(...valid);
   }
 
-  // normalize tags cấp item
-  out.forEach((it) => {
-    it.tags = [`${topic}`];
-  });
+  const items = out.slice(0, limit).map((it) => ({ ...it, tags: [topic] }));
 
   // lọc item quá “rỗng”
-  return out.filter((it) => it.headword && it.definition);
+  return items.filter((it) => it.headword && it.definition);
 }
 
 // -------------------- Cache-aware builder --------------------
