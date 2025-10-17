@@ -12,7 +12,8 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'http://localhost:5173', // Vite
+      'http://localhost:5173',
+      'http://localhost:4173', // Vite
       'https://<your-frontend-domain>',
     ],
     credentials: true, // Enable credentials for cookies

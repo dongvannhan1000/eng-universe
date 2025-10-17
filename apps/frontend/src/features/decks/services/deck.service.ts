@@ -69,3 +69,24 @@ export async function listDeckItems(
   }
   return res.data as PaginatedDeckItem;
 }
+
+export async function previewDeck(topic: string, page = 1, limit = 20, refresh = false) {
+  const res = await http.get("/decks/preview", {
+    params: { topic, page, limit, refresh },
+  });
+  return res.data as {
+    deck: {
+      slug: string;
+      title: string;
+      description?: string | null;
+      tags: string[];
+      cefr?: string | null;
+      createdAt?: string | Date;
+      updatedAt?: string | Date;
+    };
+    items: any[];
+    total: number;
+    page: number;
+    limit: number;
+  };
+}

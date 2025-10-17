@@ -42,6 +42,26 @@ export class DecksController {
     return this.decksService.findItemsBySlug(slug, query);
   }
 
+  @Public()
+  @Get('actions/preview')
+  async preview(
+    @Query('topic') topic: string,
+    @Query('page') page = '1',
+    @Query('limit') limit = '20',
+    @Query('refresh') refresh = 'false',
+  ) {
+    const p = Math.max(parseInt(page) || 1, 1);
+    const l = Math.min(Math.max(parseInt(limit) || 20, 1), 100);
+    const { deck, items, total } = await this.decksService.preview(topic, {
+      refresh: refresh === 'true',
+    });
+
+    const start = (p - 1) * l;
+    const slice = items.slice(start, start + l);
+
+    return { deck, items: slice, total, page: p, limit: l };
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.decksService.findOne(+id);

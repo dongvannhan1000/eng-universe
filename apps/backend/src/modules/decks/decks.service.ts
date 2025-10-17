@@ -3,6 +3,7 @@ import { PrismaService } from '../../infra/prisma/prisma.service';
 import { CreateDeckDto } from './dto/create-deck.dto';
 import { UpdateDeckDto } from './dto/update-deck.dto';
 import { ListDeckItemsQueryDto } from './dto/list-deck-items-query.dto';
+import { buildDeckPreview } from './decks.utils';
 
 @Injectable()
 export class DecksService {
@@ -67,6 +68,10 @@ export class DecksService {
       limit,
       items,
     };
+  }
+
+  async preview(topic: string, opts: { refresh: boolean }) {
+    return buildDeckPreview(topic, { refresh: opts.refresh });
   }
 
   update(id: number, updateDeckDto: UpdateDeckDto) {

@@ -10,6 +10,7 @@ import path from 'path';
 const prisma = new PrismaClient();
 
 // -------------------- Paths & Utils --------------------
+
 const DATA_DIR = path.resolve(__dirname, '..', 'data', 'public-decks');
 
 async function ensureDir(p: string) {
@@ -212,73 +213,6 @@ async function fetchDeckFromRemote(topic: string): Promise<CacheItem[]> {
 // -------------------- Cache-aware builder --------------------
 function toSlug(topic: string) {
   return topic.toLowerCase().trim().replace(/\s+/g, '-');
-}
-
-export async function buildDeckWithCache(
-  topic: string,
-  options?: { refresh?: boolean },
-) {
-  const slug = toSlug(topic);
-  const cacheFile = path.join(DATA_DIR, `${slug}.json`);
-
-  let items: CacheItem[] | null = null;
-
-  if (!options?.refresh) {
-    items = await readJsonIfExists<CacheItem[]>(cacheFile);
-  }
-
-  const shouldFetch =
-    !!options?.refresh ||
-    !items ||
-    (Array.isArray(items) && items.length === 0);
-
-  if (shouldFetch) {
-    console.log(`↻ Building from remote: ${topic}`);
-    items = await fetchDeckFromRemote(topic);
-    await writeJson(cacheFile, items);
-    console.log(
-      `💾 Cached to ${path.relative(process.cwd(), cacheFile)} (${items?.length ?? 0} items)`,
-    );
-  } else {
-    console.log(
-      `📦 Loaded from cache: ${path.relative(process.cwd(), cacheFile)} (${items?.length ?? 0} items)`,
-    );
-  }
-
-  // Write to DB (idempotent): upsert deck + replace items
-  await prisma.$transaction(async (tx) => {
-    const title = `${topic[0].toUpperCase()}${topic.slice(1)}`;
-    const deck = await tx.publicDeck.upsert({
-      where: { slug },
-      update: { title, tags: [topic] },
-      create: { slug, title, tags: [topic] },
-    });
-
-    await tx.publicDeckItem.deleteMany({ where: { deckId: deck.id } });
-
-    if (items?.length) {
-      await tx.publicDeckItem.createMany({
-        data: items.map((i) => ({
-          deckId: deck.id,
-          headword: i.headword,
-          pos: i.pos ?? null,
-          definition: i.definition ?? null,
-          example: i.example ?? null,
-          ipa: i.ipa ?? null,
-          collocations: i.collocations ?? [],
-          tags: i.tags ?? [],
-          source: i.source ?? null,
-          sourceAttribution: i.sourceAttribution ?? null,
-          sourceUrl: i.sourceUrl ?? null,
-          license: i.license ?? null,
-          lang: i.lang || 'en',
-        })),
-        skipDuplicates: true,
-      });
-    }
-  });
-
-  console.log(`✓ Deck ready: ${topic} (${items?.length ?? 0} items)`);
 }
 
 export async function closePrisma() {
