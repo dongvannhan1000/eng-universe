@@ -24,6 +24,10 @@ export const router = createBrowserRouter([
         element: <DeckDetailPage />,
       },
       {
+        path: "decks/preview",
+        element: <DeckDetailPage />,
+      },
+      {
         path: "vocabs",
         element: (
           <ProtectedRoute>

@@ -71,7 +71,7 @@ export async function listDeckItems(
 }
 
 export async function previewDeck(topic: string, page = 1, limit = 20, refresh = false) {
-  const res = await http.get("/decks/preview", {
+  const res = await http.get("/decks/actions/preview", {
     params: { topic, page, limit, refresh },
   });
   return res.data as {

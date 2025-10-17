@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useCallback, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectDeckDetail, setDeckPage, resetDeckDetail } from "../slices/deckDetailSlice";
 import { useDeckDetail } from "../hooks/useDeckDetail";
@@ -14,25 +14,43 @@ import { Badge } from "../../../components/ui/badge";
 import { Skeleton } from "../../../components/ui/skeleton";
 import { motion } from "framer-motion";
 
+import { usePreviewDeck } from "../hooks/usePreviewDeck";
+
 export const DeckDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
+  const [sp] = useSearchParams();
+  const location = useLocation();
+  const isPreview = location.pathname.endsWith("/decks/preview");
+  const topic = sp.get("topic") || "";
+  const refresh = sp.get("refresh") === "true";
   const dispatch = useDispatch();
   const { page, limit } = useSelector(selectDeckDetail);
 
   // First fetch deck by slug to get the ID
-  const { data: deck, isLoading: isDeckLoading, error: deckError } = useDeckDetail(slug || "");
+  const {
+    data: previewData,
+    isLoading: isPreviewLoading,
+    error: previewError,
+  } = usePreviewDeck(topic, page, limit, refresh);
+
+  // Real data (DB)
+  const {
+    data: deck,
+    isLoading: isDeckLoading,
+    error: deckError,
+  } = useDeckDetail(isPreview ? "" : slug || "");
 
   const {
     data: itemsData,
     isLoading: isItemsLoading,
     error: itemsError,
-  } = useDeckItems(slug || "", page, limit);
+  } = useDeckItems(isPreview ? "" : slug || "", page, limit);
 
   useEffect(() => {
     return () => {
       dispatch(resetDeckDetail());
     };
-  }, [dispatch, slug]);
+  }, [dispatch, slug, topic, isPreview]);
 
   const handlePageChange = useCallback(
     (newPage: number) => {
@@ -42,10 +60,20 @@ export const DeckDetailPage: React.FC = () => {
     [dispatch],
   );
 
-  const totalPages = itemsData ? Math.ceil(itemsData.total / itemsData.limit) : 0;
-  const isEmpty = itemsData && itemsData.items.length === 0;
+  const effectiveDeck = isPreview ? previewData?.deck : deck;
+  const effectiveItems = isPreview
+    ? {
+        items: previewData?.items ?? [],
+        total: previewData?.total ?? 0,
+        limit: previewData?.limit ?? limit,
+      }
+    : itemsData;
+  const isLoading = isPreview ? isPreviewLoading : isDeckLoading || isItemsLoading;
+  const hasError = isPreview ? !!previewError : deckError || itemsError;
+  const totalPages = effectiveItems ? Math.ceil(effectiveItems.total / effectiveItems.limit) : 0;
+  const isEmpty = effectiveItems ? effectiveItems.items.length === 0 : false;
 
-  if (deckError || itemsError) {
+  if (hasError) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center py-12">
@@ -78,7 +106,7 @@ export const DeckDetailPage: React.FC = () => {
     );
   }
 
-  if (!deck && !isDeckLoading) {
+  if (!effectiveDeck && !isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center py-12">
@@ -142,30 +170,30 @@ export const DeckDetailPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            deck && (
+            effectiveDeck && (
               <div>
                 <div className="flex items-start justify-between mb-3">
-                  <h1 className="text-3xl font-bold text-foreground">{deck.title}</h1>
-                  {deck.cefr && (
+                  <h1 className="text-3xl font-bold text-foreground">{effectiveDeck.title}</h1>
+                  {effectiveDeck.cefr && (
                     <Badge variant="outline" className="text-sm">
-                      {deck.cefr}
+                      {effectiveDeck.cefr}
                     </Badge>
                   )}
                 </div>
                 <p className="text-muted-foreground mb-4 leading-relaxed">
-                  {deck.description || "No description available"}
+                  {effectiveDeck.description || "No description available"}
                 </p>
                 <div className="flex items-center gap-4 mb-4">
                   <span className="text-sm text-muted-foreground">
-                    Created {new Date(deck.createdAt).toLocaleDateString()}
+                    Created {new Date(effectiveDeck.createdAt as any).toLocaleDateString()}
                   </span>
                   <span className="text-sm text-muted-foreground">
-                    Updated {new Date(deck.updatedAt).toLocaleDateString()}
+                    Updated {new Date(effectiveDeck.updatedAt as any).toLocaleDateString()}
                   </span>
                 </div>
-                {deck.tags.length > 0 && (
+                {effectiveDeck.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {deck.tags.map((tag) => (
+                    {effectiveDeck.tags.map((tag) => (
                       <Badge key={tag} variant="secondary">
                         {tag}
                       </Badge>
@@ -178,23 +206,23 @@ export const DeckDetailPage: React.FC = () => {
         </div>
 
         <div className="border-t border-border pt-6">
-          {itemsData && (
+          {effectiveItems && (
             <div className="mb-6">
               <p className="text-sm text-muted-foreground">
-                Showing <span className="font-medium">{itemsData.items.length}</span> of{" "}
-                <span className="font-medium">{itemsData.total}</span> items
+                Showing <span className="font-medium">{effectiveItems.items.length}</span> of{" "}
+                <span className="font-medium">{effectiveItems.total}</span> items
                 {page > 1 && ` (page ${page})`}
               </p>
             </div>
           )}
 
           <DeckItemList
-            items={itemsData?.items || []}
-            isLoading={isItemsLoading}
+            items={effectiveItems?.items || []}
+            isLoading={isLoading}
             isEmpty={isEmpty || false}
           />
 
-          {itemsData && totalPages > 1 && (
+          {effectiveItems && totalPages > 1 && (
             <div className="mt-8">
               <Pagination
                 currentPage={page}
