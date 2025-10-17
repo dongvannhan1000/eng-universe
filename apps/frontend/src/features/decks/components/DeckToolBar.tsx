@@ -70,7 +70,7 @@ export const DeckToolbar: React.FC<DeckToolbarProps> = ({
             ) : (
               <div className="mt-2 rounded-lg border border-border p-3 space-y-3">
                 <div className="text-sm text-muted-foreground">
-                  Enter a topic to preview a new deck (no database writes).
+                  Enter a topic to preview a new deck.
                 </div>
                 <div className="flex items-center gap-2">
                   <Input

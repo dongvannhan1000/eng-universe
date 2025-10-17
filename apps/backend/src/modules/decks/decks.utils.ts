@@ -94,7 +94,7 @@ function mapTagPos(tags?: string[]): string | undefined {
     adj: 'adjective',
     adv: 'adverb',
   };
-  const t = tags.find((x) => map[x]);
+  const t = tags.find((x) => map.hasOwnProperty(x));
   return t ? map[t] : undefined;
 }
 
@@ -194,14 +194,18 @@ async function enrichHeadword(
 }
 
 async function fetchDeckFromRemote(topic: string): Promise<CacheItem[]> {
+  console.time(`[${topic}] Total time`);
+
   // 1) candidates
+  console.time(`[${topic}] Fetch candidates`);
   const candidates = await getJson<DatamuseWord[]>(
     `${buildDatamuseUrl(topic)}`,
   );
+  console.timeEnd(`[${topic}] Fetch candidates`);
+  console.log(`[${topic}] Got ${candidates.length} candidates`);
 
   const dmIndex = new Map(candidates.map((c) => [c.word.toLowerCase(), c]));
 
-  // dedupe & filter words
   const headwords = Array.from(
     new Set(
       candidates
@@ -210,25 +214,50 @@ async function fetchDeckFromRemote(topic: string): Promise<CacheItem[]> {
     ),
   ).slice(0, 180);
 
-  // basic concurrency (pool=6) để đỡ “đập” API
+  console.log(`[${topic}] Processing ${headwords.length} headwords`);
+
+  // Thêm timeout cho enrichHeadword
   const pool = 6;
   const limit = 60;
   const out: CacheItem[] = [];
-  for (let i = 0; i < headwords.length && out.length < limit; i += pool) {
+
+  console.time(`[${topic}] Enrich all headwords`);
+  for (let i = 0; i < headwords.length; i += pool) {
     const chunk = headwords.slice(i, i + pool);
+
+    // Thêm timeout wrapper
     const part = await Promise.all(
-      chunk.map((hw) => enrichHeadword(hw, dmIndex)),
+      chunk.map((hw) =>
+        Promise.race([
+          enrichHeadword(hw, dmIndex),
+          new Promise<CacheItem>((_, reject) =>
+            setTimeout(() => reject(new Error('Timeout')), 5000),
+          ),
+        ]).catch((err) => {
+          console.warn(`[${topic}] Failed to enrich "${hw}":`, err.message);
+          return null;
+        }),
+      ),
     );
 
-    const remaining = limit - out.length;
-    const valid = part.filter(Boolean).slice(0, remaining) as CacheItem[];
-    out.push(...valid);
+    out.push(...part.filter((p): p is CacheItem => p !== null));
+
+    // Log progress
+    console.log(
+      `[${topic}] Enriched ${Math.min(i + pool, headwords.length)}/${headwords.length}`,
+    );
   }
+  console.timeEnd(`[${topic}] Enrich all headwords`);
 
-  const items = out.slice(0, limit).map((it) => ({ ...it, tags: [topic] }));
+  const items = out
+    .filter((it) => it.headword && it.definition && it.pos)
+    .slice(0, limit)
+    .map((it) => ({ ...it, tags: [topic] }));
 
-  // lọc item quá “rỗng”
-  return items.filter((it) => it.headword && it.definition);
+  console.log(`[${topic}] Final items: ${items.length}/${limit}`);
+  console.timeEnd(`[${topic}] Total time`);
+
+  return items;
 }
 
 // -------------------- Cache-aware builder --------------------

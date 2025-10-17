@@ -1,7 +1,7 @@
 import type React from "react";
 import type { DeckItem } from "../types";
 import { Card } from "../../../components/ui/card";
-import { Badge } from "../../../components/ui/badge";
+// import { Badge } from "../../../components/ui/badge";
 import { Skeleton } from "../../../components/ui/skeleton";
 
 interface DeckItemListProps {
@@ -54,7 +54,7 @@ export const DeckItemList: React.FC<DeckItemListProps> = ({ items, isLoading, is
   }
 
   return (
-    <div className="space-y-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
       {items.map((item) => (
         <Card key={item.id} className="p-6 hover:shadow-md transition-shadow">
           <div className="flex items-start justify-between mb-3">
@@ -89,7 +89,7 @@ export const DeckItemList: React.FC<DeckItemListProps> = ({ items, isLoading, is
           )}
 
           <div className="flex items-center justify-between">
-            {item.tags.length > 0 && (
+            {/* {item.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {item.tags.map((tag) => (
                   <Badge key={tag} variant="secondary" className="text-xs">
@@ -97,7 +97,7 @@ export const DeckItemList: React.FC<DeckItemListProps> = ({ items, isLoading, is
                   </Badge>
                 ))}
               </div>
-            )}
+            )} */}
 
             {item.source && (
               <span className="text-xs text-muted-foreground ml-auto">Source: {item.source}</span>
