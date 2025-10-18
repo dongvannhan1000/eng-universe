@@ -1,5 +1,8 @@
 import { http } from "@/lib/http";
-import { PaginatedVocabSchema, type PaginatedVocab } from "types";
+import { PaginatedVocabSchema } from "types";
+import type { PaginatedVocab } from "../types";
+import type { CreateVocabInput } from "../types";
+import type { Vocab } from "../types";
 
 export type ListVocabParams = {
   q?: string;
@@ -23,7 +26,7 @@ export async function listVocabs(params: ListVocabParams): Promise<PaginatedVoca
   const res = await http.get(`/vocab?${search.toString()}`);
   console.log(res.data);
   const parsed = PaginatedVocabSchema.safeParse(res.data);
-  console.log(parsed.error?.issues);
+  console.log(parsed.error?.flatten().fieldErrors);
   if (!parsed.success) {
     // Log chi tiết schema error trong dev
     if (import.meta.env.DEV) {
@@ -32,4 +35,9 @@ export async function listVocabs(params: ListVocabParams): Promise<PaginatedVoca
     throw new Error("Invalid response from server");
   }
   return parsed.data;
+}
+
+export async function createVocab(data: CreateVocabInput): Promise<Vocab> {
+  const res = await http.post("/vocab", data);
+  return res.data;
 }

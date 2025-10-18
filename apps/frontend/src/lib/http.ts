@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL, // e.g., http://localhost:3000/api
-  withCredentials: false, // bật nếu backend set cookie session
+  withCredentials: true, // Enable cookies for HTTPOnly authentication
   timeout: 15000,
 });
 

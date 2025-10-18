@@ -2,15 +2,21 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Enable cookie parser for HTTP-only cookies
+  app.use(cookieParser());
+
   app.enableCors({
     origin: [
-      'http://localhost:5173', // Vite
+      'http://localhost:5173',
+      'http://localhost:4173', // Vite
       'https://<your-frontend-domain>',
     ],
-    credentials: false,
+    credentials: true, // Enable credentials for cookies
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });

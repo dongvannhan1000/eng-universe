@@ -4,13 +4,10 @@ import {
   ArrayMaxSize,
   IsArray,
   IsBoolean,
-  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
-  Min,
-  ValidateIf,
 } from 'class-validator';
 
 const toTrimmedString = ({ value }: { value: unknown }): unknown =>
@@ -46,30 +43,30 @@ const toDateOrUndefined = ({ value }: { value: unknown }): Date | undefined => {
   return Number.isNaN(date.valueOf()) ? undefined : date;
 };
 
-const toNullableInt = ({
-  value,
-}: {
-  value: unknown;
-}): number | null | undefined => {
-  if (value === undefined || value === '') {
-    return undefined;
-  }
+// const toNullableInt = ({
+//   value,
+// }: {
+//   value: unknown;
+// }): number | null | undefined => {
+//   if (value === undefined || value === '') {
+//     return undefined;
+//   }
 
-  if (value === null) {
-    return null;
-  }
+//   if (value === null) {
+//     return null;
+//   }
 
-  if (typeof value === 'string' && value.toLowerCase() === 'null') {
-    return null;
-  }
+//   if (typeof value === 'string' && value.toLowerCase() === 'null') {
+//     return null;
+//   }
 
-  const parsed = Number(value);
-  if (Number.isNaN(parsed)) {
-    return undefined;
-  }
+//   const parsed = Number(value);
+//   if (Number.isNaN(parsed)) {
+//     return undefined;
+//   }
 
-  return Math.trunc(parsed);
-};
+//   return Math.trunc(parsed);
+// };
 
 export class CreateVocabDto {
   @ApiProperty({ maxLength: 128, example: 'polyglot' })
@@ -111,31 +108,31 @@ export class CreateVocabDto {
   @Transform(toTagArray)
   tags?: string[];
 
-  @ApiPropertyOptional({
-    type: Number,
-    nullable: true,
-    minimum: 1,
-    example: 12,
-  })
-  @IsOptional()
-  @ValidateIf((_, v) => v !== null)
-  @IsInt()
-  @Min(1)
-  @Transform(toNullableInt)
-  captureBatchId?: number | null;
+  // @ApiPropertyOptional({
+  //   type: Number,
+  //   nullable: true,
+  //   minimum: 1,
+  //   example: 12,
+  // })
+  // @IsOptional()
+  // @ValidateIf((_, v) => v !== null)
+  // @IsInt()
+  // @Min(1)
+  // @Transform(toNullableInt)
+  // captureBatchId?: number | null;
 
-  @ApiPropertyOptional({
-    type: Number,
-    nullable: true,
-    minimum: 0,
-    example: 95,
-  })
-  @IsOptional()
-  @ValidateIf((_, v) => v !== null)
-  @IsInt()
-  @Min(0)
-  @Transform(toNullableInt)
-  timecodeSec?: number | null;
+  // @ApiPropertyOptional({
+  //   type: Number,
+  //   nullable: true,
+  //   minimum: 0,
+  //   example: 95,
+  // })
+  // @IsOptional()
+  // @ValidateIf((_, v) => v !== null)
+  // @IsInt()
+  // @Min(0)
+  // @Transform(toNullableInt)
+  // timecodeSec?: number | null;
 
   @ApiPropertyOptional({
     type: String,
