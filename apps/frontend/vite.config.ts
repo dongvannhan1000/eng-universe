@@ -26,24 +26,24 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // build: {
-  //   sourcemap: true,
-  //   rollupOptions: {
-  //     output: {
-  //       manualChunks: {
-  //         'react-vendor': ['react', 'react-dom'],
-  //         'router-vendor': ['react-router-dom'],
-  //         'http-vendor': ['axios'],
-  //         'utils-vendor': ['lodash'],
-  //       }
-  //     }
-  //   }
-  // },
+  build: {
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "react-vendor": ["react", "react-dom"],
+          "router-vendor": ["react-router-dom"],
+          "http-vendor": ["axios"],
+          "utils-vendor": ["lodash"],
+        },
+      },
+    },
+  },
 
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:3001",
+        target: process.env.VITE_API_URL || "http://localhost:3001",
         changeOrigin: true,
       },
     },
