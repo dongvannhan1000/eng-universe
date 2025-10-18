@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build:tsc": "NODE_OPTIONS='--max-old-space-size=1024' tsc -b",
-    "build:vite": "NODE_OPTIONS='--max-old-space-size=1024' vite build",
+    "build:tsc": "tsc -b",
+    "build:vite": "vite build",
     "build": "npm run build:tsc && npm run build:vite",
     "lint": "eslint .",
     "preview": "vite preview",
