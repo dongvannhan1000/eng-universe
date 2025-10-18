@@ -5,6 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+console.log(FRONTEND_URL);
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,7 +17,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:5173',
       'http://localhost:4173', // Vite
-      FRONTEND_URL,
+      `${FRONTEND_URL}`,
     ],
     credentials: true, // Enable credentials for cookies
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
