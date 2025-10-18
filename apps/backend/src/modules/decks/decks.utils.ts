@@ -172,7 +172,7 @@ async function enrichHeadword(
     `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(hw)}`,
   ).catch(() => null);
   const entry = dict?.[0];
-  const ipa = entry ? bestPhonetic(entry) : undefined;
+  // const ipa = entry ? bestPhonetic(entry) : undefined;
   const m = entry ? bestMeaning(entry) : undefined;
 
   const item: CacheItem = {

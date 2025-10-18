@@ -19,6 +19,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Public } from './decorators/public.decorator';
+import { User } from '@prisma/client';
 
 @ApiTags('auth')
 @Controller('api/auth')
@@ -43,7 +44,7 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.authService.login((req as any).user);
+    const result = await this.authService.login(req.user as User);
 
     // Set HTTP-only cookie
     res.cookie('access_token', result.access_token, {
@@ -74,7 +75,7 @@ export class AuthController {
   @Get('profile')
   @ApiOperation({ summary: 'Get current user profile' })
   getProfile(@NestRequest() req: Request) {
-    return (req as any).user;
+    return req.user;
   }
 
   @Public()

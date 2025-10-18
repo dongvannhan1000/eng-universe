@@ -12,7 +12,7 @@ export class ActiveUserService {
 
   getUserId(): number {
     // Extract user ID from JWT token (set by JwtStrategy)
-    const user = (this.request as any).user;
+    const user = (this.request as Request & { user: { userId: number } }).user;
     if (user?.userId) {
       return user.userId;
     }

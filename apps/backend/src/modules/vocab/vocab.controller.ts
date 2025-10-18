@@ -19,11 +19,11 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiExtraModels,
-  ApiNotFoundResponse,
+  // ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiParam,
-  ApiQuery,
+  // ApiParam,
+  // ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { PaginatedVocabDoc } from './entities/list-vocab.entity';

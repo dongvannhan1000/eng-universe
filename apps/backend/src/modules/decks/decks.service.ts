@@ -15,9 +15,9 @@ export class DecksService {
     });
   }
 
-  create(createDeckDto: CreateDeckDto) {
-    return 'This action adds a new deck';
-  }
+  // create(createDeckDto: CreateDeckDto) {
+  //   return 'This action adds a new deck';
+  // }
 
   async findOneBySlug(slug: string) {
     const deck = await this.prisma.publicDeck.findUnique({
@@ -74,9 +74,9 @@ export class DecksService {
     return buildDeckPreview(topic, { refresh: opts.refresh });
   }
 
-  update(id: number, updateDeckDto: UpdateDeckDto) {
-    return `This action updates a #${id} deck`;
-  }
+  // update(id: number, updateDeckDto: UpdateDeckDto) {
+  //   return `This action updates a #${id} deck`;
+  // }
 
   remove(id: number) {
     return `This action removes a #${id} deck`;

@@ -29,10 +29,10 @@ export class DecksController {
     return this.decksService.findOneBySlug(slug);
   }
 
-  @Post()
-  create(@Body() createDeckDto: CreateDeckDto) {
-    return this.decksService.create(createDeckDto);
-  }
+  // @Post()
+  // create(@Body() createDeckDto: CreateDeckDto) {
+  //   return this.decksService.create(createDeckDto);
+  // }
 
   @Get(':slug/items')
   findItems(
@@ -67,10 +67,10 @@ export class DecksController {
     return this.decksService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDeckDto: UpdateDeckDto) {
-    return this.decksService.update(+id, updateDeckDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateDeckDto: UpdateDeckDto) {
+  //   return this.decksService.update(+id, updateDeckDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

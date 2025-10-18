@@ -2,7 +2,6 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
-  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -118,6 +117,7 @@ export class AuthService {
 
       return { message: 'Password reset successfully' };
     } catch (error) {
+      console.log(error);
       throw new UnauthorizedException('Invalid or expired reset token');
     }
   }
