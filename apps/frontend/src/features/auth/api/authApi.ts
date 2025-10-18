@@ -57,7 +57,7 @@ export async function forgotPassword(data: ForgotPasswordRequest): Promise<{ mes
 export async function getCurrentUser(): Promise<User> {
   const url = "/auth/profile";
 
-  const res = await http.get(url);
+  const res = await http.get(url, { withCredentials: true });
 
   if (res.status >= 400) {
     throw new Error(`Failed to fetch user: ${res.status} ${res.statusText}`);

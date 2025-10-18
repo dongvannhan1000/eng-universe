@@ -47,6 +47,7 @@ export default defineConfig({
     host: "0.0.0.0",
     port: parseInt(process.env.PORT as any) || 5173,
     strictPort: true,
+    allowedHosts: [process.env.VITE_HOST as string],
   },
 
   // server: {
