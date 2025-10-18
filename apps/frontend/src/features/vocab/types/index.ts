@@ -8,8 +8,8 @@ export interface Vocab {
   explanationEn: string | null;
   notes: string | null;
   tags: string[];
-  timecodeSec: number | null;
-  captureBatchId: number | null;
+  // timecodeSec: number | null;
+  // captureBatchId: number | null;
   addedAt: string;
   lastReviewedAt: string | null;
   isSuspended: boolean;
@@ -28,8 +28,8 @@ export interface CreateVocabInput {
   tags: string[];
   explanationEn?: string;
   notes?: string;
-  timecodeSec?: number;
-  captureBatchId?: string;
+  // timecodeSec?: number;
+  // captureBatchId?: string;
 }
 
 export interface VocabListParams {

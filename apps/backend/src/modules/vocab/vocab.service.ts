@@ -27,8 +27,8 @@ export class VocabService {
         tags: dto.tags?.length
           ? dto.tags.map((tag) => tag.trim()).filter(Boolean)
           : [],
-        captureBatchId: dto.captureBatchId ?? null,
-        timecodeSec: dto.timecodeSec ?? null,
+        // captureBatchId: dto.captureBatchId ?? null,
+        // timecodeSec: dto.timecodeSec ?? null,
         dueAt: dto.dueAt ?? new Date(),
         isSuspended: dto.isSuspended ?? false,
       },
@@ -77,7 +77,7 @@ export class VocabService {
     const userId = this.activeUser.getUserId();
     const vocab = await this.prisma.vocab.findFirst({
       where: { id, userId },
-      include: { captureBatch: true },
+      // include: { captureBatch: true },
     });
 
     if (!vocab) {
@@ -114,15 +114,15 @@ export class VocabService {
       data.tags = dto.tags.map((tag) => tag.trim()).filter(Boolean);
     }
 
-    if (dto.captureBatchId !== undefined) {
-      data.captureBatch = dto.captureBatchId
-        ? { connect: { id: dto.captureBatchId } }
-        : { disconnect: true };
-    }
+    // if (dto.captureBatchId !== undefined) {
+    //   data.captureBatch = dto.captureBatchId
+    //     ? { connect: { id: dto.captureBatchId } }
+    //     : { disconnect: true };
+    // }
 
-    if (dto.timecodeSec !== undefined) {
-      data.timecodeSec = dto.timecodeSec;
-    }
+    // if (dto.timecodeSec !== undefined) {
+    //   data.timecodeSec = dto.timecodeSec;
+    // }
 
     if (dto.dueAt !== undefined) {
       data.dueAt = dto.dueAt;
@@ -135,9 +135,9 @@ export class VocabService {
     const vocab = await this.prisma.vocab.update({
       where: { id },
       data,
-      include: {
-        captureBatch: true,
-      },
+      // include: {
+      //   captureBatch: true,
+      // },
     });
 
     return vocab;
@@ -193,9 +193,9 @@ export class VocabService {
       conditions.push({ tags: { hasEvery: query.tags } });
     }
 
-    if (query.captureBatchId) {
-      conditions.push({ captureBatchId: query.captureBatchId });
-    }
+    // if (query.captureBatchId) {
+    //   conditions.push({ captureBatchId: query.captureBatchId });
+    // }
 
     if (query.onlyDue || query.dueBefore) {
       const dueBefore = query.dueBefore ?? new Date();

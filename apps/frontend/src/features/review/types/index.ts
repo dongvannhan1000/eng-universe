@@ -7,7 +7,7 @@ export interface VocabCard {
   explanationEn?: string | null;
   notes?: string | null;
   tags: string[];
-  timecodeSec?: number | null;
+  // timecodeSec?: number | null;
   dueAt: string; // ISO
   intervalDays: number;
   ease: number; // 130..350
@@ -16,7 +16,7 @@ export interface VocabCard {
   lastResult?: ReviewResult | null;
   lastReviewedAt?: string | null;
   // Additional fields from backend Vocab model
-  captureBatchId?: number | null;
+  // captureBatchId?: number | null;
   addedAt?: string;
   isSuspended?: boolean;
 }

@@ -111,31 +111,31 @@ export class CreateVocabDto {
   @Transform(toTagArray)
   tags?: string[];
 
-  @ApiPropertyOptional({
-    type: Number,
-    nullable: true,
-    minimum: 1,
-    example: 12,
-  })
-  @IsOptional()
-  @ValidateIf((_, v) => v !== null)
-  @IsInt()
-  @Min(1)
-  @Transform(toNullableInt)
-  captureBatchId?: number | null;
+  // @ApiPropertyOptional({
+  //   type: Number,
+  //   nullable: true,
+  //   minimum: 1,
+  //   example: 12,
+  // })
+  // @IsOptional()
+  // @ValidateIf((_, v) => v !== null)
+  // @IsInt()
+  // @Min(1)
+  // @Transform(toNullableInt)
+  // captureBatchId?: number | null;
 
-  @ApiPropertyOptional({
-    type: Number,
-    nullable: true,
-    minimum: 0,
-    example: 95,
-  })
-  @IsOptional()
-  @ValidateIf((_, v) => v !== null)
-  @IsInt()
-  @Min(0)
-  @Transform(toNullableInt)
-  timecodeSec?: number | null;
+  // @ApiPropertyOptional({
+  //   type: Number,
+  //   nullable: true,
+  //   minimum: 0,
+  //   example: 95,
+  // })
+  // @IsOptional()
+  // @ValidateIf((_, v) => v !== null)
+  // @IsInt()
+  // @Min(0)
+  // @Transform(toNullableInt)
+  // timecodeSec?: number | null;
 
   @ApiPropertyOptional({
     type: String,

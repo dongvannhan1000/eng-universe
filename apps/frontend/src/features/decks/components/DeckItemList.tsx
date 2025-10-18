@@ -64,7 +64,7 @@ export const DeckItemList: React.FC<DeckItemListProps> = ({ items, isLoading, is
                 {item.pos && (
                   <span className="text-sm text-muted-foreground italic">({item.pos})</span>
                 )}
-                {item.ipa && <span className="text-sm text-muted-foreground">/{item.ipa}/</span>}
+                {/* {item.ipa && <span className="text-sm text-muted-foreground">/{item.ipa}/</span>} */}
               </div>
             </div>
           </div>
@@ -75,7 +75,7 @@ export const DeckItemList: React.FC<DeckItemListProps> = ({ items, isLoading, is
             </p>
           )}
 
-          {item.example && (
+          {/* {item.example && (
             <p className="text-sm text-muted-foreground mb-3 leading-relaxed italic">
               "{item.example}"
             </p>
@@ -86,7 +86,7 @@ export const DeckItemList: React.FC<DeckItemListProps> = ({ items, isLoading, is
               <span className="text-sm font-medium text-foreground">Collocations: </span>
               <span className="text-sm text-muted-foreground">{item.collocations.join(", ")}</span>
             </div>
-          )}
+          )} */}
 
           <div className="flex items-center justify-between">
             {/* {item.tags.length > 0 && (

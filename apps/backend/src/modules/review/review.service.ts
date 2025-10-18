@@ -32,9 +32,6 @@ export class ReviewService {
       },
       orderBy: [{ dueAt: 'asc' }, { ease: 'asc' }, { id: 'asc' }],
       take,
-      include: {
-        captureBatch: true,
-      },
     });
 
     return { items, dueBefore };
@@ -50,9 +47,6 @@ export class ReviewService {
       this.prisma.vocab.update({
         where: { id: vocab.id },
         data: next,
-        include: {
-          captureBatch: true,
-        },
       }),
       this.prisma.vocabReview.create({
         data: {

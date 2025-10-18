@@ -28,26 +28,26 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  batches   CaptureBatch[]
+  // batches   CaptureBatch[]
   vocabs    Vocab[]
   reviews   VocabReview[]
 
   @@map("user")
 }
 
-model CaptureBatch {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  startedAt DateTime  @default(now())
-  endedAt   DateTime?
-  tags      String[]
+// model CaptureBatch {
+//   id        Int       @id @default(autoincrement())
+//   userId    Int
+//   startedAt DateTime  @default(now())
+//   endedAt   DateTime?
+//   tags      String[]
 
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items   Vocab[]
+//   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   items   Vocab[]
 
-  @@index([userId, startedAt])
-  @@map("capture_batch")
-}
+//   @@index([userId, startedAt])
+//   @@map("capture_batch")
+// }
 
 model PublicDeck {
   id          Int              @id @default(autoincrement())
@@ -55,7 +55,7 @@ model PublicDeck {
   title       String
   description String?
   tags        String[]
-  cefr        String?          // optional: A2/B1/B2/C1/C2
+  // cefr        String?          // optional: A2/B1/B2/C1/C2
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
@@ -70,15 +70,15 @@ model PublicDeckItem {
   headword          String     @db.VarChar(128)
   pos               String?    // noun/verb/adj...
   definition        String?    @db.Text
-  example           String?    @db.Text
-  ipa               String?    @db.VarChar(128)
-  collocations      String[]   // ["reduce emissions", "renewable energy", ...]
+  // example           String?    @db.Text
+  // ipa               String?    @db.VarChar(128)
+  // collocations      String[]   // ["reduce emissions", "renewable energy", ...]
   tags              String[]   // ["ielts","environment"]
   source            String?    // "datamuse","dictionaryapi.dev","wordnik","wiktionary"
-  sourceAttribution String?    // "Wiktionary (CC BY-SA 4.0) via Datamuse"
-  sourceUrl         String?
-  license           String?    // "CC BY-SA 4.0", "Wordnik API ToS", ...
-  lang              String     @default("en")
+  // sourceAttribution String?    // "Wiktionary (CC BY-SA 4.0) via Datamuse"
+  // sourceUrl         String?
+  // license           String?    // "CC BY-SA 4.0", "Wordnik API ToS", ...
+  // lang              String     @default("en")
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
 
@@ -99,10 +99,10 @@ model Vocab {
   tags           String[]
 
   // optional context
-  timecodeSec    Int?
+  // timecodeSec    Int?
 
-  // batch grouping
-  captureBatchId Int?
+  // // batch grouping
+  // captureBatchId Int?
 
   // timestamps
   addedAt        DateTime  @default(now())
@@ -120,7 +120,7 @@ model Vocab {
   lastResult     ReviewResult?
 
   user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  captureBatch  CaptureBatch? @relation(fields: [captureBatchId], references: [id], onDelete: SetNull)
+  // captureBatch  CaptureBatch? @relation(fields: [captureBatchId], references: [id], onDelete: SetNull)
   reviews       VocabReview[]
 
   @@index([addedAt])

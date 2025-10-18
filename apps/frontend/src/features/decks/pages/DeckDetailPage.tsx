@@ -174,11 +174,11 @@ export const DeckDetailPage: React.FC = () => {
               <div>
                 <div className="flex items-start justify-between mb-3">
                   <h1 className="text-3xl font-bold text-foreground">{effectiveDeck.title}</h1>
-                  {effectiveDeck.cefr && (
+                  {/* {effectiveDeck.cefr && (
                     <Badge variant="outline" className="text-sm">
                       {effectiveDeck.cefr}
                     </Badge>
-                  )}
+                  )} */}
                 </div>
                 <p className="text-muted-foreground mb-4 leading-relaxed">
                   {effectiveDeck.description || "No description available"}

@@ -6,7 +6,7 @@ export class LoginDto {
     description: 'Username (email)',
     example: 'user@example.com',
   })
-  @IsEmail()
+  @IsString()
   username!: string;
 
   @ApiProperty({

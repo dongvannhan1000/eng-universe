@@ -38,15 +38,15 @@ type CacheItem = {
   headword: string;
   pos?: string | null;
   definition?: string | null;
-  example?: string | null;
-  ipa?: string | null;
-  collocations: string[];
+  // example?: string | null;
+  // ipa?: string | null;
+  // collocations: string[];
   tags: string[];
   source?: string | null;
-  sourceAttribution?: string | null;
-  sourceUrl?: string | null;
-  license?: string | null;
-  lang: string; // e.g., "en"
+  // sourceAttribution?: string | null;
+  // sourceUrl?: string | null;
+  // license?: string | null;
+  // lang: string; // e.g., "en"
 };
 
 type DatamuseWord = {
@@ -155,15 +155,15 @@ async function enrichHeadword(
       headword: hw,
       pos: mapTagPos(dm?.tags) ?? dmDef.pos ?? null,
       definition: dmDef.definition,
-      example: null,
-      ipa: null,
-      collocations: [],
+      // example: null,
+      // ipa: null,
+      // collocations: [],
       tags: [],
-      source: 'datamuse',
-      sourceAttribution: 'Datamuse',
-      sourceUrl: null,
-      license: 'Datamuse API',
-      lang: 'en',
+      source: 'Datamuse',
+      // sourceAttribution: 'Datamuse',
+      // sourceUrl: null,
+      // license: 'Datamuse API',
+      // lang: 'en',
     };
     return item;
   }
@@ -179,15 +179,15 @@ async function enrichHeadword(
     headword: hw,
     pos: m?.pos ?? mapTagPos(dm?.tags) ?? dmDef?.pos ?? null,
     definition: m?.definition ?? dmDef?.definition ?? null,
-    example: m?.example ?? null,
-    ipa: ipa ?? null,
-    collocations: [],
+    // example: m?.example ?? null,
+    // ipa: ipa ?? null,
+    // collocations: [],
     tags: [],
-    source: m?.definition ? 'dictionaryapi.dev' : 'datamuse',
-    sourceAttribution: m?.definition ? 'DictionaryAPI.dev' : 'Datamuse',
-    sourceUrl: null,
-    license: 'Mixed: see attribution',
-    lang: 'en',
+    source: m?.definition ? 'DictionaryAPI.dev' : 'Datamuse',
+    // sourceAttribution: m?.definition ? 'DictionaryAPI.dev' : 'Datamuse',
+    // sourceUrl: null,
+    // license: 'Mixed: see attribution',
+    // lang: 'en',
   };
 
   return item;

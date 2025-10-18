@@ -35,8 +35,8 @@ export function AddVocabDialog() {
     tags: [],
     explanationEn: "",
     notes: "",
-    timecodeSec: undefined,
-    captureBatchId: "",
+    // timecodeSec: undefined,
+    // captureBatchId: "",
   });
 
   const [tagInput, setTagInput] = useState("");
@@ -67,8 +67,8 @@ export function AddVocabDialog() {
       tags: [],
       explanationEn: "",
       notes: "",
-      timecodeSec: undefined,
-      captureBatchId: "",
+      // timecodeSec: undefined,
+      // captureBatchId: "",
     });
     setTagInput("");
     setErrors({});
@@ -107,8 +107,8 @@ export function AddVocabDialog() {
       tags: formData.tags,
       ...(formData.explanationEn?.trim() && { explanationEn: formData.explanationEn.trim() }),
       ...(formData.notes?.trim() && { notes: formData.notes.trim() }),
-      ...(formData.timecodeSec && { timecodeSec: formData.timecodeSec }),
-      ...(formData.captureBatchId?.trim() && { captureBatchId: formData.captureBatchId.trim() }),
+      // ...(formData.timecodeSec && { timecodeSec: formData.timecodeSec }),
+      // ...(formData.captureBatchId?.trim() && { captureBatchId: formData.captureBatchId.trim() }),
     };
 
     mutation.mutate(submitData);
@@ -266,7 +266,7 @@ export function AddVocabDialog() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              {/* <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="timecodeSec">Timecode (seconds)</Label>
                   <Input
@@ -293,7 +293,7 @@ export function AddVocabDialog() {
                     placeholder="e.g., TedTalk #1"
                   />
                 </div>
-              </div>
+              </div> */}
             </div>
           )}
 

@@ -24,8 +24,8 @@ export const VocabEntitySchema = z.object({
 
   tags: z.array(z.string()),
 
-  timecodeSec: z.number().int().nonnegative().nullable(),
-  captureBatchId: z.number().int().nullable(),
+  // timecodeSec: z.number().int().nonnegative().nullable(),
+  // captureBatchId: z.number().int().nullable(),
 
   // Backend là Date → JSON ISO string
   addedAt: z.string().datetime(),
