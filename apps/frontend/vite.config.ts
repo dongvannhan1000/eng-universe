@@ -39,6 +39,16 @@ export default defineConfig({
   //     }
   //   }
   // },
+
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+      },
+    },
+  },
+
   // server: {
   //   host: '0.0.0.0',
   //   port: parseInt(process.env.PORT as any) || 4173,

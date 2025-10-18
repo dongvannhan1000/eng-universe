@@ -1,0 +1,35 @@
+import { http } from "@/lib/http";
+import { PaginatedVocabSchema, type PaginatedVocab } from "types";
+
+export type ListVocabParams = {
+  q?: string;
+  tags?: string[];
+  from?: string | null; // ISO
+  to?: string | null; // ISO
+  page?: number; // 1-based
+  limit?: number; // default 20
+};
+
+export async function listVocabs(params: ListVocabParams): Promise<PaginatedVocab> {
+  // Chuẩn hoá query: loại bỏ param default/empty
+  const search = new URLSearchParams();
+  if (params.q) search.set("q", params.q);
+  if (params.tags && params.tags.length) search.set("tags", params.tags.join(","));
+  if (params.from) search.set("from", params.from);
+  if (params.to) search.set("to", params.to);
+  if (params.page && params.page > 1) search.set("page", String(params.page));
+  if (params.limit && params.limit !== 20) search.set("limit", String(params.limit));
+
+  const res = await http.get(`/vocab?${search.toString()}`);
+  console.log(res.data);
+  const parsed = PaginatedVocabSchema.safeParse(res.data);
+  console.log(parsed.error?.issues);
+  if (!parsed.success) {
+    // Log chi tiết schema error trong dev
+    if (import.meta.env.DEV) {
+      console.error("Vocab DTO mismatch:", parsed.error.flatten());
+    }
+    throw new Error("Invalid response from server");
+  }
+  return parsed.data;
+}

@@ -1,4 +1,4 @@
-import { PrismaClient, SourceKind } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -12,29 +12,9 @@ async function main() {
     },
   });
 
-  const source = await prisma.source.upsert({
-    where: {
-      userId_url: {
-        userId: user.id,
-        url: 'https://youtu.be/dQw4w9WgXcQ',
-      },
-    },
-    update: {},
-    create: {
-      userId: user.id,
-      kind: SourceKind.YOUTUBE,
-      title: 'English Vocab - Episode 1',
-      url: 'https://youtu.be/dQw4w9WgXcQ',
-      author: 'Learning Channel',
-      defaultTags: ['YouTube', 'Episode1'],
-      defaultNotes: 'Demo source for MVP',
-    },
-  });
-
   const batch = await prisma.captureBatch.create({
     data: {
       userId: user.id,
-      sourceId: source.id,
       tags: ['Session-Demo'],
     },
   });
@@ -60,8 +40,7 @@ async function main() {
           userId: user.id,
           word: it.word,
           meaningVi: it.meaningVi,
-          tags: ['demo', ...source.defaultTags],
-          sourceId: source.id,
+          tags: ['demo'],
           timecodeSec: it.timecodeSec,
           captureBatchId: batch.id,
 
@@ -81,7 +60,7 @@ async function main() {
     data: { endedAt: new Date() },
   });
 
-  console.log('✅ Seeded: 1 user, 1 source, 1 batch, 5 vocabs');
+  console.log('✅ Seeded: 1 user, 1 batch, 5 vocabs');
 }
 
 main()
