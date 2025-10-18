@@ -27,26 +27,27 @@ export default defineConfig({
     },
   },
   build: {
-    sourcemap: true,
+    sourcemap: false,
+    minify: "esbuild",
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: {
-          "react-vendor": ["react", "react-dom"],
-          "router-vendor": ["react-router-dom"],
-          "http-vendor": ["axios"],
-          "utils-vendor": ["lodash"],
-        },
+        manualChunks: undefined,
       },
     },
   },
 
   server: {
-    proxy: {
-      "/api": {
-        target: process.env.VITE_API_URL || "http://localhost:3001",
-        changeOrigin: true,
-      },
-    },
+    host: "0.0.0.0",
+    port: parseInt(process.env.PORT as any) || 4173,
+    strictPort: true,
+  },
+
+  preview: {
+    host: "0.0.0.0",
+    port: parseInt(process.env.PORT as any) || 5173,
+    strictPort: true,
+    allowedHosts: [process.env.VITE_API_BASE_URL as string],
   },
 
   // server: {
