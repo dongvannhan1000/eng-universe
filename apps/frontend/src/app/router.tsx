@@ -1,13 +1,48 @@
 import { createBrowserRouter } from "react-router-dom";
 import { VocabListPage } from "../features/vocab/pages/VocabListPage";
+import { DeckListPage } from "../features/decks/pages/DeckListPage";
+import { DeckDetailPage } from "../features/decks/pages/DeckDetailPage";
+import { Layout } from "../components/Layout";
+import { ProtectedRoute } from "../components/ProtectedRoute";
+import { ReviewQueuePage } from "@/features/review/pages/ReviewQueuePage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <VocabListPage />,
-  },
-  {
-    path: "/vocabs",
-    element: <VocabListPage />,
+    element: <Layout />,
+    children: [
+      {
+        index: true,
+        element: <DeckListPage />,
+      },
+      {
+        path: "decks",
+        element: <DeckListPage />,
+      },
+      {
+        path: "decks/:slug",
+        element: <DeckDetailPage />,
+      },
+      {
+        path: "decks/preview",
+        element: <DeckDetailPage />,
+      },
+      {
+        path: "vocabs",
+        element: (
+          <ProtectedRoute>
+            <VocabListPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "review",
+        element: (
+          <ProtectedRoute>
+            <ReviewQueuePage />
+          </ProtectedRoute>
+        ),
+      },
+    ],
   },
 ]);

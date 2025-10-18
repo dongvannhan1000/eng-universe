@@ -23,26 +23,70 @@ enum ReviewResult {
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
+  password  String
   name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  batches   CaptureBatch[]
+  // batches   CaptureBatch[]
   vocabs    Vocab[]
   reviews   VocabReview[]
+
+  @@map("user")
 }
 
-model CaptureBatch {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  startedAt DateTime  @default(now())
-  endedAt   DateTime?
-  tags      String[]
+// model CaptureBatch {
+//   id        Int       @id @default(autoincrement())
+//   userId    Int
+//   startedAt DateTime  @default(now())
+//   endedAt   DateTime?
+//   tags      String[]
 
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items   Vocab[]
+//   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   items   Vocab[]
 
-  @@index([userId, startedAt])
+//   @@index([userId, startedAt])
+//   @@map("capture_batch")
+// }
+
+model PublicDeck {
+  id          Int              @id @default(autoincrement())
+  slug        String           @unique
+  title       String
+  description String?
+  tags        String[]
+  // cefr        String?          // optional: A2/B1/B2/C1/C2
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  items       PublicDeckItem[]
+
+  @@map("public_deck")
+}
+
+model PublicDeckItem {
+  id                Int        @id @default(autoincrement())
+  deckId            Int
+  headword          String     @db.VarChar(128)
+  pos               String?    // noun/verb/adj...
+  definition        String?    @db.Text
+  // example           String?    @db.Text
+  // ipa               String?    @db.VarChar(128)
+  // collocations      String[]   // ["reduce emissions", "renewable energy", ...]
+  tags              String[]   // ["ielts","environment"]
+  source            String?    // "datamuse","dictionaryapi.dev","wordnik","wiktionary"
+  // sourceAttribution String?    // "Wiktionary (CC BY-SA 4.0) via Datamuse"
+  // sourceUrl         String?
+  // license           String?    // "CC BY-SA 4.0", "Wordnik API ToS", ...
+  // lang              String     @default("en")
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  deck PublicDeck @relation(fields: [deckId], references: [id], onDelete: Cascade)
+
+  @@index([deckId, headword])
+  @@unique([deckId, headword, pos]) // tránh trùng item trong cùng deck
+  @@map("public_deck_item")
 }
 
 model Vocab {
@@ -55,10 +99,10 @@ model Vocab {
   tags           String[]
 
   // optional context
-  timecodeSec    Int?
+  // timecodeSec    Int?
 
-  // batch grouping
-  captureBatchId Int?
+  // // batch grouping
+  // captureBatchId Int?
 
   // timestamps
   addedAt        DateTime  @default(now())
@@ -76,13 +120,14 @@ model Vocab {
   lastResult     ReviewResult?
 
   user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  captureBatch  CaptureBatch? @relation(fields: [captureBatchId], references: [id], onDelete: SetNull)
+  // captureBatch  CaptureBatch? @relation(fields: [captureBatchId], references: [id], onDelete: SetNull)
   reviews       VocabReview[]
 
   @@index([addedAt])
   @@index([lastReviewedAt])
   @@index([dueAt])
   @@unique([userId, word])
+  @@map("vocab")
 }
 
 model VocabReview {
@@ -99,4 +144,5 @@ model VocabReview {
 
   @@index([userId, reviewedAt])
   @@index([vocabId, reviewedAt])
+  @@map("vocab_review")
 }

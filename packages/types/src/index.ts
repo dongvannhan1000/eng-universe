@@ -6,7 +6,6 @@ export const EnvSchema = z.object({
   DATABASE_URL: z.string().url(),
   FRONTEND_URL: z.string().url().optional(),
 });
-
 export type Env = z.infer<typeof EnvSchema>;
 
 export const ReviewResultSchema = z.enum(["AGAIN", "HARD", "GOOD", "EASY"]);
@@ -25,8 +24,8 @@ export const VocabEntitySchema = z.object({
 
   tags: z.array(z.string()),
 
-  timecodeSec: z.number().int().nonnegative().nullable(),
-  captureBatchId: z.number().int().nullable(),
+  // timecodeSec: z.number().int().nonnegative().nullable(),
+  // captureBatchId: z.number().int().nullable(),
 
   // Backend là Date → JSON ISO string
   addedAt: z.string().datetime(),
@@ -51,5 +50,4 @@ export const PaginatedVocabSchema = z.object({
   take: z.number().int().min(1),
   total: z.number().int().nonnegative(),
 });
-
 export type PaginatedVocab = z.infer<typeof PaginatedVocabSchema>;

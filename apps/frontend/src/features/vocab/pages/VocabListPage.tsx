@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import {
   selectFilters,
   setQ,
-  setTags,
+  // setTags,
   setFrom,
   setTo,
   setPage,
@@ -18,11 +18,17 @@ import { useVocabs } from "../hooks/useVocabs";
 import { VocabToolbar } from "../components/VocabToolbar";
 import { VocabularyList } from "../components/VocabularyList";
 import { Pagination } from "../../../components/Pagination";
+import { AddVocabDialog } from "../components/AddVocabDialog";
+import { CaptureModeToggle } from "../components/CaptureModeToggle";
+
+import type { RootState } from "@/app/store";
+import { motion } from "framer-motion";
 
 export const VocabListPage: React.FC = () => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const filters = useSelector(selectFilters);
+  const { isAuthenticated } = useSelector((s: RootState) => s.auth);
 
   const { data, isLoading, error } = useVocabs(filters);
 
@@ -61,12 +67,12 @@ export const VocabListPage: React.FC = () => {
     [dispatch],
   );
 
-  const handleTagsChange = useCallback(
-    (tags: string[]) => {
-      dispatch(setTags(tags));
-    },
-    [dispatch],
-  );
+  // const handleTagsChange = useCallback(
+  //   (tags: string[]) => {
+  //     dispatch(setTags(tags));
+  //   },
+  //   [dispatch],
+  // );
 
   const handleFromDateChange = useCallback(
     (date: string | null) => {
@@ -93,6 +99,7 @@ export const VocabListPage: React.FC = () => {
     dispatch(resetFilters());
   }, [dispatch]);
 
+  const currentPage = data ? data.skip / data.take + 1 : 1;
   const totalPages = data ? Math.ceil(data.total / data.take) : 0;
   const isEmpty = data && data.items.length === 0;
 
@@ -127,13 +134,26 @@ export const VocabListPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: 0.08 }}
+    >
       <div className="container mx-auto px-4 py-8">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Vocabulary Learning</h1>
-          <p className="text-muted-foreground">
-            Discover and learn new English words with detailed explanations and examples.
-          </p>
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground mb-2">My Constellation</h1>
+              <p className="text-muted-foreground">
+                Curate your galaxy of words — each star a memory.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <CaptureModeToggle />
+              {/* Add mới từ vựng */}
+              {isAuthenticated && <AddVocabDialog />}
+            </div>
+          </div>
         </header>
 
         <VocabToolbar
@@ -142,7 +162,7 @@ export const VocabListPage: React.FC = () => {
           fromDate={filters.from}
           toDate={filters.to}
           onSearchChange={handleSearchChange}
-          onTagsChange={handleTagsChange}
+          // onTagsChange={handleTagsChange}
           onFromDateChange={handleFromDateChange}
           onToDateChange={handleToDateChange}
           onClearFilters={handleClearFilters}
@@ -151,7 +171,8 @@ export const VocabListPage: React.FC = () => {
         {data && (
           <div className="mb-6">
             <p className="text-sm text-muted-foreground">
-              Showing {data.items.length} of {data.total} vocabularies
+              Showing <span className="font-medium">{data.items.length}</span> of{" "}
+              <span className="font-medium">{data.total}</span> vocabularies
               {filters.page > 1 && ` (page ${filters.page})`}
             </p>
           </div>
@@ -162,13 +183,13 @@ export const VocabListPage: React.FC = () => {
         {data && totalPages > 1 && (
           <div className="mt-8">
             <Pagination
-              currentPage={data.page}
+              currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
             />
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };

@@ -1,15 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope, Inject } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
 
 /**
- * ActiveUserService is a lightweight placeholder for authentication.
- * For the MVP we only have a single personal account, so the ID can
- * be provided through the environment or fall back to `1`.
+ * ActiveUserService extracts the user ID from the JWT token in the request.
+ * Falls back to demo user ID for backwards compatibility.
  */
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class ActiveUserService {
-  private readonly userId: number;
+  constructor(@Inject(REQUEST) private request: Request) {}
 
-  constructor() {
+  getUserId(): number {
+    // Extract user ID from JWT token (set by JwtStrategy)
+    const user = (this.request as Request & { user: { userId: number } }).user;
+    if (user?.userId) {
+      return user.userId;
+    }
+
+    // Fallback to demo user for backwards compatibility
     const raw = process.env.DEMO_USER_ID ?? process.env.DEFAULT_USER_ID ?? '1';
     const parsed = Number.parseInt(raw, 10);
 
@@ -19,10 +27,6 @@ export class ActiveUserService {
       );
     }
 
-    this.userId = parsed;
-  }
-
-  getUserId(): number {
-    return this.userId;
+    return parsed;
   }
 }
