@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
+import { clearError } from "../slices/authSlice";
 
 interface AuthDialogProps {
   open: boolean;
@@ -24,8 +25,14 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
   const dispatch = useDispatch();
   const activeTab = useSelector((s: RootState) => s.authDialog.authActiveTab);
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    // clear ngay để lần mở tiếp theo không bị dính lỗi cũ
+    dispatch(clearError());
+    onOpenChange(nextOpen);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Welcome</DialogTitle>

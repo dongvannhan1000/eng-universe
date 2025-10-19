@@ -1,6 +1,7 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 import type { AuthState, LoginRequest, RegisterRequest } from "../types";
 import * as authApi from "../api/authApi";
+import { setAuthActiveTab } from "../slices/authDialogSlice";
 
 // Initial state - no localStorage, auth is managed via HTTPOnly cookies
 const initialState: AuthState = {
@@ -11,15 +12,31 @@ const initialState: AuthState = {
 };
 
 // Async thunks
-export const loginUser = createAsyncThunk("auth/login", async (credentials: LoginRequest) => {
-  const response = await authApi.login(credentials);
-  return response;
-});
+export const loginUser = createAsyncThunk(
+  "auth/login",
+  async (credentials: LoginRequest, { rejectWithValue }) => {
+    try {
+      const response = await authApi.login(credentials);
+      return response;
+    } catch (error: any) {
+      // Trả về error message từ API hoặc message tùy chỉnh
+      return rejectWithValue(error.response?.data?.message || "Login failed");
+    }
+  },
+);
 
-export const registerUser = createAsyncThunk("auth/register", async (data: RegisterRequest) => {
-  const response = await authApi.register(data);
-  return response;
-});
+export const registerUser = createAsyncThunk(
+  "auth/register",
+  async (data: RegisterRequest, { rejectWithValue }) => {
+    try {
+      const response = await authApi.register(data);
+      return response;
+    } catch (error: any) {
+      // Trả về error message từ API hoặc message tùy chỉnh
+      return rejectWithValue(error.response?.data?.message || "Registration failed");
+    }
+  },
+);
 
 export const verifyAuth = createAsyncThunk("auth/verify", async () => {
   const user = await authApi.getCurrentUser();
@@ -53,7 +70,7 @@ const authSlice = createSlice({
     });
     builder.addCase(loginUser.rejected, (state, action) => {
       state.isLoading = false;
-      state.error = action.error.message || "Login failed";
+      state.error = (action.payload as string) || "Login failed";
     });
 
     // Register
@@ -67,7 +84,7 @@ const authSlice = createSlice({
     });
     builder.addCase(registerUser.rejected, (state, action) => {
       state.isLoading = false;
-      state.error = action.error.message || "Registration failed";
+      state.error = (action.payload as string) || "Registration failed";
     });
 
     // Verify auth
@@ -83,6 +100,9 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.user = null;
       state.isAuthenticated = false;
+    });
+    builder.addMatcher(isAnyOf(setAuthActiveTab, authSlice.actions.logout), (state) => {
+      state.error = null;
     });
   },
 });

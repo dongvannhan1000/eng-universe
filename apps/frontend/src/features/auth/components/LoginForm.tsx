@@ -67,9 +67,9 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
         />
       </div>
 
-      <Button type="button" variant="link" className="px-0 text-sm" onClick={onForgotPassword}>
+      {/* <Button type="button" variant="link" className="px-0 text-sm" onClick={onForgotPassword}>
         Forgot password?
-      </Button>
+      </Button> */}
 
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Signing in..." : "Sign in"}
