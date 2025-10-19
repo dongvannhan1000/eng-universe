@@ -7,6 +7,7 @@ export interface FiltersState {
   to: string | null;
   page: number;
   limit: number;
+  includeSuspended: boolean;
 }
 
 const initialState: FiltersState = {
@@ -16,6 +17,7 @@ const initialState: FiltersState = {
   to: null,
   page: 1,
   limit: 20,
+  includeSuspended: false,
 };
 
 const filtersSlice = createSlice({
@@ -52,6 +54,11 @@ const filtersSlice = createSlice({
       state.to = null;
       state.page = 1;
       state.limit = 20;
+      state.includeSuspended = false;
+    },
+    setIncludeSuspended: (state, action: PayloadAction<boolean>) => {
+      state.includeSuspended = action.payload;
+      state.page = 1; // Reset page when includeSuspended changes
     },
     hydrateFromUrl: (state, action: PayloadAction<Partial<FiltersState>>) => {
       Object.assign(state, action.payload);
@@ -59,8 +66,17 @@ const filtersSlice = createSlice({
   },
 });
 
-export const { setQ, setTags, setFrom, setTo, setPage, setLimit, resetFilters, hydrateFromUrl } =
-  filtersSlice.actions;
+export const {
+  setQ,
+  setTags,
+  setFrom,
+  setTo,
+  setPage,
+  setLimit,
+  resetFilters,
+  setIncludeSuspended,
+  hydrateFromUrl,
+} = filtersSlice.actions;
 
 export const selectFilters = (state: { filters: FiltersState }) => state.filters;
 

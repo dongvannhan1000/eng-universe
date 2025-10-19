@@ -165,6 +165,19 @@ export class VocabService {
     return { id };
   }
 
+  async toggleSuspend(id: number) {
+    await this.ensureOwnership(id);
+
+    const vocab = await this.prisma.vocab.findUnique({ where: { id } });
+
+    await this.prisma.vocab.update({
+      where: { id },
+      data: { isSuspended: !vocab?.isSuspended },
+    });
+
+    return { id, isSuspended: !vocab?.isSuspended };
+  }
+
   async getSummary() {
     const userId = this.activeUser.getUserId();
     const now = new Date();

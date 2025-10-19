@@ -2,6 +2,8 @@ import React from "react";
 import type { Vocab } from "../types";
 import { VocabCard } from "./VocabCard";
 import { VocabCardSkeleton } from "./VocabCardSkeleton";
+import { toggleSuspendVocab } from "../services/vocab.service";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface VocabularyListProps {
   vocabs: Vocab[];
@@ -11,6 +13,17 @@ interface VocabularyListProps {
 
 export const VocabularyList = React.memo<VocabularyListProps>(
   ({ vocabs, isLoading = false, isEmpty = false }) => {
+    const queryClient = useQueryClient();
+    const toggleSuspendMutation = useMutation({
+      mutationFn: (id: number) => toggleSuspendVocab(id),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["vocabs"] });
+      },
+    });
+
+    const handleSuspend = (vocab: Vocab) => {
+      toggleSuspendMutation.mutate(vocab.id);
+    };
     if (isLoading) {
       return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -50,7 +63,7 @@ export const VocabularyList = React.memo<VocabularyListProps>(
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {vocabs.map((vocab) => (
-          <VocabCard key={vocab.id} vocab={vocab} />
+          <VocabCard key={vocab.id} vocab={vocab} onSuspend={handleSuspend} />
         ))}
       </div>
     );

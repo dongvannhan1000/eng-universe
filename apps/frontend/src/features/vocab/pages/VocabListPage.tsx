@@ -13,6 +13,7 @@ import {
   setPage,
   resetFilters,
   hydrateFromUrl,
+  setIncludeSuspended,
 } from "../slices/filtersSlice";
 import { useVocabs } from "../hooks/useVocabs";
 import { VocabToolbar } from "../components/VocabToolbar";
@@ -41,6 +42,7 @@ export const VocabListPage: React.FC = () => {
       to: searchParams.get("to") || null,
       page: Number.parseInt(searchParams.get("page") || "1", 10),
       limit: Number.parseInt(searchParams.get("limit") || "20", 10),
+      includeSuspended: searchParams.get("includeSuspended") === "true",
     };
 
     dispatch(hydrateFromUrl(urlParams));
@@ -56,7 +58,7 @@ export const VocabListPage: React.FC = () => {
     if (filters.to) params.set("to", filters.to);
     if (filters.page > 1) params.set("page", filters.page.toString());
     if (filters.limit !== 20) params.set("limit", filters.limit.toString());
-
+    if (filters.includeSuspended) params.set("includeSuspended", "true");
     setSearchParams(params, { replace: true });
   }, [filters, setSearchParams]);
 
@@ -91,6 +93,13 @@ export const VocabListPage: React.FC = () => {
   const handlePageChange = useCallback(
     (page: number) => {
       dispatch(setPage(page));
+    },
+    [dispatch],
+  );
+
+  const handleIncludeSuspendedChange = useCallback(
+    (includeSuspended: boolean) => {
+      dispatch(setIncludeSuspended(includeSuspended));
     },
     [dispatch],
   );
@@ -161,7 +170,9 @@ export const VocabListPage: React.FC = () => {
           selectedTags={filters.tags}
           fromDate={filters.from}
           toDate={filters.to}
+          includeSuspended={filters.includeSuspended}
           onSearchChange={handleSearchChange}
+          onIncludeSuspendedChange={handleIncludeSuspendedChange}
           // onTagsChange={handleTagsChange}
           onFromDateChange={handleFromDateChange}
           onToDateChange={handleToDateChange}

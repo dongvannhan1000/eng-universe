@@ -8,7 +8,9 @@ interface VocabToolbarProps {
   selectedTags: string[];
   fromDate: string | null;
   toDate: string | null;
+  includeSuspended: boolean;
   onSearchChange: (query: string) => void;
+  onIncludeSuspendedChange: (includeSuspended: boolean) => void;
   // onTagsChange: (tags: string[]) => void;
   onFromDateChange: (date: string | null) => void;
   onToDateChange: (date: string | null) => void;
@@ -21,7 +23,9 @@ export const VocabToolbar = React.memo<VocabToolbarProps>(
     selectedTags,
     fromDate,
     toDate,
+    includeSuspended,
     onSearchChange,
+    onIncludeSuspendedChange,
     // onTagsChange,
     // onFromDateChange,
     // onToDateChange,
@@ -38,6 +42,20 @@ export const VocabToolbar = React.memo<VocabToolbarProps>(
               onChange={onSearchChange}
               placeholder="Search by word or explanation..."
             />
+          </div>
+
+          <div className="flex items-center">
+            <label className="flex items-center gap-2 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={includeSuspended}
+                onChange={(e) => onIncludeSuspendedChange(e.target.checked)}
+                className="w-4 h-4 rounded border-border text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0 cursor-pointer"
+              />
+              <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                Include suspended words
+              </span>
+            </label>
           </div>
 
           {/* <div>

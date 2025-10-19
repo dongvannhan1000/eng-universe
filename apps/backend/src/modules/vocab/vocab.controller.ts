@@ -68,6 +68,11 @@ export class VocabController {
     return this.vocabService.update(id, updateVocabDto);
   }
 
+  @Patch('toggle-suspend/:id')
+  toggleSuspend(@Param('id', ParseIntPipe) id: number) {
+    return this.vocabService.toggleSuspend(id);
+  }
+
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.vocabService.remove(id);
