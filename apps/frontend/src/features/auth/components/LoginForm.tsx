@@ -12,10 +12,10 @@ import { Label } from "@/components/ui/label";
 
 interface LoginFormProps {
   onSuccess: () => void;
-  onForgotPassword: () => void;
+  // onForgotPassword: () => void;
 }
 
-export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
+export function LoginForm({ onSuccess }: LoginFormProps) {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading, error } = useSelector((state: RootState) => state.auth);
   const [username, setUsername] = useState("");

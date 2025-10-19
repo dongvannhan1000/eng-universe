@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { ActiveUserService } from '../../common/active-user.service';
 import { PrismaService } from '../../infra/prisma/prisma.service';
@@ -17,27 +22,38 @@ export class VocabService {
   async create(dto: CreateVocabDto) {
     const userId = this.activeUser.getUserId();
 
-    const vocab = await this.prisma.vocab.create({
-      data: {
-        userId,
-        word: dto.word.trim(),
-        meaningVi: dto.meaningVi.trim(),
-        explanationEn: dto.explanationEn?.trim() ?? null,
-        notes: dto.notes?.trim() ?? null,
-        tags: dto.tags?.length
-          ? dto.tags.map((tag) => tag.trim()).filter(Boolean)
-          : [],
-        // captureBatchId: dto.captureBatchId ?? null,
-        // timecodeSec: dto.timecodeSec ?? null,
-        dueAt: dto.dueAt ?? new Date(),
-        isSuspended: dto.isSuspended ?? false,
-      },
-      // include: {
-      //   captureBatch: true,
-      // },
-    });
+    try {
+      const vocab = await this.prisma.vocab.create({
+        data: {
+          userId,
+          word: dto.word.trim(),
+          meaningVi: dto.meaningVi.trim(),
+          explanationEn: dto.explanationEn?.trim() ?? null,
+          notes: dto.notes?.trim() ?? null,
+          tags: dto.tags?.length
+            ? dto.tags.map((tag) => tag.trim()).filter(Boolean)
+            : [],
+          dueAt: dto.dueAt ?? new Date(),
+          isSuspended: dto.isSuspended ?? false,
+        },
+      });
 
-    return vocab;
+      return vocab;
+    } catch (error) {
+      if ((error as Prisma.PrismaClientKnownRequestError).code === 'P2002') {
+        throw new BadRequestException(
+          `The word "${dto.word}" is already exists`,
+        );
+      }
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new InternalServerErrorException({
+        message:
+          'Failed to create new word, please try again or contact support',
+        detail: (error as Error).message,
+      });
+    }
   }
 
   async findAll(query: ListVocabQueryDto) {

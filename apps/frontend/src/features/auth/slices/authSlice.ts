@@ -20,7 +20,7 @@ export const loginUser = createAsyncThunk(
       return response;
     } catch (error: any) {
       // Trả về error message từ API hoặc message tùy chỉnh
-      return rejectWithValue(error.response?.data?.message || "Login failed");
+      return rejectWithValue(error.message || "Login failed");
     }
   },
 );
@@ -33,7 +33,7 @@ export const registerUser = createAsyncThunk(
       return response;
     } catch (error: any) {
       // Trả về error message từ API hoặc message tùy chỉnh
-      return rejectWithValue(error.response?.data?.message || "Registration failed");
+      return rejectWithValue(error.message || "Registration failed");
     }
   },
 );

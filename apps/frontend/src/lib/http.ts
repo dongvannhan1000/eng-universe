@@ -17,8 +17,12 @@ http.interceptors.request.use((config) => {
 http.interceptors.response.use(
   (res) => res,
   (err) => {
+    const payload = err?.response?.data;
+    const msg = Array.isArray(payload?.message)
+      ? payload.message.join("; ")
+      : payload?.message || err.message || "Request failed";
     // Có thể map code NestJS -> message thân thiện
     // Ví dụ dùng toast ở layer gọi
-    return Promise.reject(err);
+    return Promise.reject(new Error(msg));
   },
 );

@@ -36,7 +36,9 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Welcome</DialogTitle>
-          <DialogDescription>Sign in to access your vocabulary and reviews</DialogDescription>
+          <DialogDescription>
+            Sign in to access your vocabularies and training missions
+          </DialogDescription>
         </DialogHeader>
 
         <Tabs
@@ -52,7 +54,7 @@ export function AuthDialog({ open, onOpenChange }: AuthDialogProps) {
           <TabsContent value="login" className="mt-4">
             <LoginForm
               onSuccess={() => onOpenChange(false)}
-              onForgotPassword={() => dispatch(setAuthActiveTab("forgot"))}
+              // onForgotPassword={() => dispatch(setAuthActiveTab("forgot"))}
             />
           </TabsContent>
 
