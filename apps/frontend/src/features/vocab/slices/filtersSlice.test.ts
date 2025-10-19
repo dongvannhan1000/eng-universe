@@ -17,6 +17,7 @@ const initialState: FiltersState = {
   to: null,
   page: 1,
   limit: 20,
+  includeSuspended: false,
 };
 
 describe("filtersSlice", () => {
@@ -67,6 +68,7 @@ describe("filtersSlice", () => {
       to: "2024-12-31",
       page: 3,
       limit: 50,
+      includeSuspended: false,
     };
 
     const actual = filtersReducer(modifiedState, resetFilters());
