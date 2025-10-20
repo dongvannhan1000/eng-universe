@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Sparkles, X } from "lucide-react";
+import { http } from "@/lib/http";
 
 export const MysteryQuote = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -13,16 +14,8 @@ export const MysteryQuote = () => {
   const fetchQuote = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        "https://api.quotable.io/quotes/random?tags=education|science|life",
-      );
-      const data = await response.json();
-      // API trả về array, lấy phần tử đầu tiên
-      if (Array.isArray(data) && data.length > 0) {
-        setQuote(data[0]);
-      } else {
-        setQuote(data);
-      }
+      const response = await http.get<Quote>("/quote");
+      setQuote(response.data);
     } catch (error) {
       console.error("Error fetching quote:", error);
       setQuote({
