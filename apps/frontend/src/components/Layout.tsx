@@ -15,6 +15,7 @@ import { openAuthDialog, closeAuthDialog } from "@/features/auth/slices/authDial
 // (Optional) nếu có lucide-react:
 import { Telescope, Sparkles, Rocket } from "lucide-react";
 import { MysteryQuote } from "./MysteryQuote";
+import FeedbackWidget from "./FeedbackWidget";
 
 export const Layout: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -154,6 +155,8 @@ export const Layout: React.FC = () => {
           open ? dispatch(openAuthDialog({ tab: "login" })) : dispatch(closeAuthDialog())
         }
       />
+
+      <FeedbackWidget formUrl="https://forms.gle/JsFTfG5Wt4BJSyRk6" />
     </div>
   );
 };
