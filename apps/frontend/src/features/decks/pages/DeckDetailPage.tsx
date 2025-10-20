@@ -180,17 +180,17 @@ export const DeckDetailPage: React.FC = () => {
                     </Badge>
                   )} */}
                 </div>
-                <p className="text-muted-foreground mb-4 leading-relaxed">
+                {/* <p className="text-muted-foreground mb-4 leading-relaxed">
                   {effectiveDeck.description || "No description available"}
-                </p>
-                <div className="flex items-center gap-4 mb-4">
+                </p> */}
+                {/* <div className="flex items-center gap-4 mb-4">
                   <span className="text-sm text-muted-foreground">
                     Created {new Date(effectiveDeck.createdAt as any).toLocaleDateString()}
                   </span>
                   <span className="text-sm text-muted-foreground">
                     Updated {new Date(effectiveDeck.updatedAt as any).toLocaleDateString()}
                   </span>
-                </div>
+                </div> */}
                 {effectiveDeck.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {effectiveDeck.tags.map((tag) => (
