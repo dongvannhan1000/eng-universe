@@ -14,7 +14,7 @@ import { PrismaModule } from '../../infra/prisma/prisma.module';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
-      signOptions: { expiresIn: '15m' },
+      signOptions: { expiresIn: '30d' },
     }),
   ],
   controllers: [AuthController],

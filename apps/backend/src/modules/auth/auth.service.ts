@@ -4,6 +4,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+// import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../infra/prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
@@ -16,6 +17,7 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    // private configService: ConfigService,
   ) {}
 
   async register(registerDto: RegisterDto): Promise<{ message: string }> {
