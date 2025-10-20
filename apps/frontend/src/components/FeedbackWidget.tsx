@@ -12,8 +12,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 /**
  * FeedbackWidget – A compact feedback widget positioned at bottom-left corner
- *
- * Features:
+ * * Features:
  * - Compact floating button with tooltip
  * - Bottom-left positioning
  * - Smooth animations
@@ -75,9 +74,13 @@ export default function FeedbackWidget({
 
       {/* Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="w-[95vw] max-w-3xl h-[85vh] p-0 overflow-hidden gap-0">
+        {/* Đã chỉnh sửa: Loại bỏ 'p-0' và điều chỉnh chiều cao để tối ưu cho nội dung cuộn */}
+        {/* 'h-full' đảm bảo chiều cao tối đa có thể, 'max-w-3xl' giữ nguyên chiều rộng */}
+        <DialogContent className="w-[95vw] max-w-3xl h-[85vh] p-0 overflow-hidden gap-0 flex flex-col">
           {/* Header */}
-          <DialogHeader className="px-6 pt-6 pb-4 border-b">
+          <DialogHeader className="px-6 pt-6 pb-4 border-b flex-shrink-0">
+            {" "}
+            {/* Thêm 'flex-shrink-0' */}
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <DialogTitle className="text-xl font-semibold">{buttonLabel}</DialogTitle>
@@ -87,7 +90,8 @@ export default function FeedbackWidget({
           </DialogHeader>
 
           {/* Body */}
-          <div className="relative flex-1 min-h-0">
+          {/* Đã chỉnh sửa: Đảm bảo phần này mở rộng để lấp đầy không gian còn lại */}
+          <div className="relative flex-1 min-h-0 overflow-y-auto">
             {/* Loader */}
             {!loaded && (
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-background/80 backdrop-blur-sm">
@@ -109,11 +113,13 @@ export default function FeedbackWidget({
 
             {/* iFrame */}
             {embedUrl ? (
-              <div className="h-full w-full p-6">
+              // Đã chỉnh sửa: Loại bỏ 'p-6' ở đây. Kích thước iframe phải là 100% của container
+              <div className="h-full w-full">
                 <iframe
                   title="Google Form – Phản hồi"
                   src={embedUrl}
-                  className="block h-full w-full rounded-lg border border-border shadow-sm"
+                  // Đã chỉnh sửa: 'border-0' và 'rounded-none' để loại bỏ viền và góc tròn, tận dụng tối đa không gian.
+                  className="block h-full w-full border-0 rounded-none"
                   frameBorder={0}
                   onLoad={() => setLoaded(true)}
                   referrerPolicy="no-referrer-when-downgrade"
@@ -137,7 +143,9 @@ export default function FeedbackWidget({
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-3 border-t bg-muted/30">
+          <div className="px-6 py-3 border-t bg-muted/30 flex-shrink-0">
+            {" "}
+            {/* Thêm 'flex-shrink-0' */}
             <p className="text-xs text-muted-foreground">
               <span className="font-medium">Note:</span> Form is provided by Google Forms. The
               content you submit will be stored on Google's system.
@@ -149,6 +157,7 @@ export default function FeedbackWidget({
   );
 }
 
+// Giữ nguyên các hàm helper
 function ensureEmbedded(url: string) {
   try {
     const u = new URL(url);
