@@ -21,6 +21,8 @@ A modern vocabulary learning application built with a spaced repetition system (
 🔐 **User Authentication**: Secure JWT-based authentication with cookie support  
 🎨 **Modern UI**: Built with React, Redux, and Tailwind CSS for a smooth user experience
 
+Link to the live demo: https://enguniverse.onrender.com/
+
 ### Tech Stack
 
 **Frontend:**
@@ -61,7 +63,7 @@ Ensure you have the following installed:
 
 ```bash
 git clone <repository-url>
-cd learning-lab
+cd eng-universe
 ```
 
 ### 2. Install Dependencies
@@ -80,7 +82,7 @@ Create a new PostgreSQL database:
 
 ```bash
 psql -U postgres
-CREATE DATABASE learning_lab;
+CREATE DATABASE eng_universe;
 \q
 ```
 
@@ -97,11 +99,7 @@ Add the following configuration to `apps/backend/.env`:
 
 ```env
 # Database
-DATABASE_URL="postgresql://postgres:your_password@localhost:5432/learning_lab?schema=public"
-
-# JWT
-JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
-JWT_EXPIRES_IN="7d"
+DATABASE_URL="postgresql://postgres:your_password@localhost:5432/eng_universe"
 
 # Server
 PORT=3001
@@ -110,7 +108,7 @@ PORT=3001
 FRONTEND_URL="http://localhost:5173"
 ```
 
-> **Note:** Replace `your_password` with your PostgreSQL password and `your-super-secret-jwt-key-change-this-in-production` with a strong random string.
+> **Note:** Replace `your_password` with your PostgreSQL password.
 
 #### Run Database Migrations
 
@@ -130,9 +128,14 @@ Populate the database with sample data:
 npm run seed
 ```
 
+or
+
+```bash
+npx tsx prisma/seed.ts
+```
+
 This creates:
 
-- A demo user account: `demo@example.com` / `password123`
 - Sample vocabulary items
 - Public decks with curated vocabulary
 
@@ -222,15 +225,6 @@ npm run lint             # Lint frontend code
 
 ---
 
-## 🔑 Default Credentials
-
-After seeding the database, you can log in with:
-
-- **Email**: `demo@example.com`
-- **Password**: `password123`
-
----
-
 ## 📚 API Documentation
 
 Once the backend is running, visit [http://localhost:3001/api](http://localhost:3001/api) to explore the interactive Swagger API documentation.
@@ -246,12 +240,6 @@ Contributions are welcome! Please follow these steps:
 3. Commit your changes: `git commit -m 'Add amazing feature'`
 4. Push to the branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the ISC License.
 
 ---
 
@@ -272,12 +260,6 @@ This project is licensed under the ISC License.
 
 - Reset the database: `cd apps/backend && npm run db:reset`
 - Regenerate Prisma Client: `npm run prisma:generate`
-
----
-
-## 📞 Support
-
-If you encounter any issues or have questions, please [open an issue](https://github.com/your-repo/learning-lab/issues) on GitHub.
 
 ---
 
